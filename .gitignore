@@ -1,0 +1,169 @@
+# ==========================================
+# 系统自动生成文件（所有系统通用）
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# ==========================================
+# IDE / 编辑器配置文件
+# ==========================================
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.sln
+*.suo
+*.user
+*.unityproj
+
+# ==========================================
+# 构建 / 依赖 / 包管理目录
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.bowerrc
+bower_components/
+
+vendor/
+composer.phar
+composer.lock
+
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+.nb-gradle/
+
+# ==========================================
+# 语言：Python
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.env
+.venv
+*.egg-info/
+.installed.cfg
+*.egg
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# ==========================================
+# 语言：Java / Kotlin
+# ==========================================
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+target/
+out/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ==========================================
+# 语言：Go
+# ==========================================
+/bin/
+/pkg/
+/Gopkg.lock
+/Gopkg.sum
+/vendor/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# ==========================================
+# 前端：打包产物
+# ==========================================
+dist/
+build/
+output/
+public/
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist
+.vuepress/.temp
+.vuepress/.cache
+
+# ==========================================
+# 环境变量 / 密钥 / 敏感文件
+# ==========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+!.env.example
+id_rsa
+id_rsa.pub
+id_dsa
+id_ecdsa
+id_ed25519
+secret*
+credentials
+*.pem
+*.key
+
+# ==========================================
+# 日志 / 临时文件
+# ==========================================
+logs/
+log/
+*.log
+tmp/
+temp/
+*.tmp
+*.temp
+core
+dump
+
+# ==========================================
+# 数据库 / 本地数据
+# ==========================================
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.mdf
+*.ldf
+*.rdb
+*.xlsx
+*.xls
+*.zip
+*.rar
+*.7z
+*.tar.gz
