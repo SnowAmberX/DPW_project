@@ -1,9 +1,14 @@
 import logging
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Query
 
-from app.schemas.infection import InfectionSnapshotRequest, InfectionSnapshotResponse
+from app.schemas.infection import (
+    InfectionSnapshotRequest,
+    InfectionSnapshotResponse,
+    InfectionTimelineResponse,
+)
 from app.services.mock_data import generate_mock_snapshot
+from app.services.timeline_data import build_infection_timeline
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/infections", tags=["infections"])
@@ -19,3 +24,19 @@ def get_infection_snapshot(payload: InfectionSnapshotRequest) -> InfectionSnapsh
 
     snapshot = generate_mock_snapshot()
     return InfectionSnapshotResponse(**snapshot)
+
+
+@router.get("/timeline", response_model=InfectionTimelineResponse)
+def get_infection_timeline(
+    start_date: str | None = Query(default=None, description="Optional start date in YYYY-MM-DD format"),
+    end_date: str | None = Query(default=None, description="Optional end date in YYYY-MM-DD format"),
+    step_days: int = Query(default=7, ge=1, le=90, description="Sample one frame every N days"),
+) -> InfectionTimelineResponse:
+    try:
+        timeline = build_infection_timeline(start_date=start_date, end_date=end_date, step_days=step_days)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    return InfectionTimelineResponse(**timeline)

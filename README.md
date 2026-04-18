@@ -34,3 +34,9 @@
 ## dataset choose
 
 [**COVID-19 Dataset**](https://docs.owid.io/projects/etl/api/covid/)
+
+## App Structure
+
+- `backend/`: FastAPI service (health + infection APIs)
+- `frontend/`: Vue3 + ECharts map animation frontend
+- `data/`: raw and processed datasets

@@ -12,6 +12,7 @@ uvicorn app.main:app --reload --port 8000
 
 - `GET /health`
 - `POST /api/v1/infections/snapshot`
+- `GET /api/v1/infections/timeline`
 
 Request body example:
 
@@ -32,3 +33,30 @@ Response example:
   }
 }
 ```
+
+Timeline response example:
+
+```json
+{
+  "metric": "total_cases",
+  "frame_count": 3,
+  "start_date": "2020-01-04",
+  "end_date": "2020-02-01",
+  "max_infections": 12500,
+  "frames": [
+    {
+      "date": "2020-01-04",
+      "infections_by_country": {
+        "Afghanistan": 0,
+        "United States": 0
+      }
+    }
+  ]
+}
+```
+
+Timeline query params:
+
+- `start_date` (optional, `YYYY-MM-DD`)
+- `end_date` (optional, `YYYY-MM-DD`)
+- `step_days` (optional, default `7`, range `1~90`)

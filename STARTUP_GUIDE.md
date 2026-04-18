@@ -1,19 +1,19 @@
 # Frontend + Backend Startup Guide
 
-This guide explains how to run the Streamlit frontend and FastAPI backend in this project.
+This guide explains how to run the Vue3 frontend and FastAPI backend in this project.
 
 ## 1. Open Two Terminals
 
-Use two separate terminals:
+Use two terminals:
 - Terminal A: backend
 - Terminal B: frontend
 
 ## 2. Start Backend (FastAPI)
 
-### Step 1: Go to backend folder
+### Step 1: Enter backend directory
 
 ```bash
-cd /Users/skiwalllee/code/self_project/DPW_project/backend
+cd backend
 ```
 
 ### Step 2: Install backend dependencies
@@ -28,9 +28,9 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-### Step 4: Verify backend is running
+### Step 4: Verify backend
 
-Open in browser:
+Open:
 - http://127.0.0.1:8000/health
 - http://127.0.0.1:8000/docs
 
@@ -40,76 +40,74 @@ Expected health response:
 {"status":"ok"}
 ```
 
-## 3. Start Frontend (Streamlit)
+## 3. Start Frontend (Vue3)
 
-### Step 1: Go to project root
+### Step 1: Enter frontend directory
 
 ```bash
-cd /Users/skiwalllee/code/self_project/DPW_project
+cd frontend
 ```
 
 ### Step 2: Install frontend dependencies
 
 ```bash
-pip install streamlit plotly pandas
+npm install
 ```
 
-### Step 3: Run frontend app
+### Step 3: Run dev server
 
 ```bash
-streamlit run App/app_test.py
+npm run dev
 ```
 
-## 4. Test Frontend ↔ Backend Connection
+Open the frontend URL shown in terminal (default is `http://127.0.0.1:5173`).
+
+## 4. Test Timeline Map Animation
 
 1. Keep backend running on port 8000.
-2. Open frontend page.
-3. In sidebar, keep API URL as:
+2. Open the Vue page.
+3. Ensure Backend URL is `http://127.0.0.1:8000`.
+4. Click "重新加载" to fetch timeline data.
+5. Click "播放" to animate infection spread by date.
+
+Backend timeline endpoint used by frontend:
 
 ```text
-http://127.0.0.1:8000/api/v1/infections/snapshot
-```
-
-4. Click a country on the map.
-5. Check backend terminal output. You should see a printed country code, such as:
-
-```text
-[backend] country_code received: USA
+GET /api/v1/infections/timeline?start_date=2020-01-04&end_date=2023-12-31&step_days=14
 ```
 
 ## 5. Common Issues
 
-### Error: No module named uvicorn
-
-Run:
+### Error: `No module named uvicorn`
 
 ```bash
-cd /Users/skiwalllee/code/self_project/DPW_project/backend
+cd backend
 pip install -r requirements.txt
 ```
 
-### Error: Backend connection failed (in Streamlit warning)
+### Error: frontend cannot connect backend
 
 Check:
-- Backend is running.
-- Backend URL in sidebar is correct.
-- Port 8000 is not blocked/occupied.
+- Backend is running on port 8000.
+- Frontend Backend URL is correct.
+- CORS is enabled (already configured in `app/main.py`).
 
-### Error: streamlit command not found
+### Error: `npm` command not found
 
-Run:
+Install Node.js LTS, then run:
 
 ```bash
-pip install streamlit
+npm -v
+node -v
 ```
 
 ## 6. Stop Services
 
-Press `Ctrl + C` in each terminal.
+Press `Ctrl + C` in both terminals.
 
 ## 7. Suggested Workflow
 
 1. Start backend first.
 2. Confirm `/health` works.
 3. Start frontend.
-4. Click map countries to test request flow.
+4. Load timeline and play animation.
