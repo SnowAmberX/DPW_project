@@ -167,3 +167,5 @@ dump
 *.rar
 *.7z
 *.tar.gz
+
+*.docx
