@@ -184,13 +184,13 @@ fig = create_map_figure(map_df)
 try:
     event = st.plotly_chart(
         fig,
-        use_container_width=True,
+        width='stretch',
         key="infection_world_map",
         on_select="rerun",
     )
 except TypeError:
     st.warning("Your current Streamlit version does not support click selection on Plotly charts.")
-    st.plotly_chart(fig, use_container_width=True, key="infection_world_map_fallback")
+    st.plotly_chart(fig, width='stretch', key="infection_world_map_fallback")
     event = None
 
 clicked_code = extract_selected_code(event)
