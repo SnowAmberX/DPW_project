@@ -1,0 +1,17 @@
+# Core numerical & data libraries
+numpy>=1.24
+pandas>=1.5
+
+# Visualization
+plotly>=6.7.0
+
+# PyTorch (CPU/GPU build chosen by user)
+torch>=2.0.0
+
+# Graph neural network support (PyTorch Geometric)
+# NOTE: PyG has platform-specific wheels. See README.md for installation guidance.
+torch-geometric
+
+# Optional / utilities
+typing-extensions>=4.0
+tqdm>=4.64

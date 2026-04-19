@@ -1,0 +1,15 @@
+{
+  "checkpoint": "D:\\Desktop\\Code\\Python\\DPW\\DPW_project\\model\\neural\\artifacts\\checkpoint_gnn_rnn_improved.pt",
+  "best_val_loss": 0.2787195473182492,
+  "best_val_objective": 1.3238946606473225,
+  "num_countries": 237,
+  "horizon": 60,
+  "seq_len": 21,
+  "rnn_type": "gru",
+  "distance_threshold_km": 10000.0,
+  "kernel_scale_km": 3000.0,
+  "density_exponent": 0.5,
+  "activity_weight": 6.0,
+  "activity_weight_clip": 5.0,
+  "time_decay": 0.03
+}
