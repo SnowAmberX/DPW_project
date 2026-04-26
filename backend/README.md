@@ -13,6 +13,7 @@ uvicorn app.main:app --reload --port 8000
 - `GET /health`
 - `POST /api/v1/infections/snapshot`
 - `GET /api/v1/infections/timeline`
+- `POST /api/v1/infections/neural-prediction`
 
 Request body example:
 
@@ -60,3 +61,42 @@ Timeline query params:
 - `start_date` (optional, `YYYY-MM-DD`)
 - `end_date` (optional, `YYYY-MM-DD`)
 - `step_days` (optional, default `7`, range `1~90`)
+
+Neural prediction request body example:
+
+```json
+{
+  "seed_country": "USA",
+  "start_date": "2026-01-01"
+}
+```
+
+Neural prediction response example (simplified):
+
+```json
+{
+  "metric": "predicted_new_cases",
+  "seed_country_code": "USA",
+  "seed_country_name": "United States",
+  "frame_count": 60,
+  "start_date": "2026-01-01",
+  "end_date": "2026-03-01",
+  "max_new_cases": 12345.67,
+  "frames": [
+    {
+      "day": 1,
+      "date": "2026-01-01",
+      "new_cases_by_country": {
+        "United States": 12000.12,
+        "Japan": 2300.88
+      }
+    }
+  ]
+}
+```
+
+If your environment does not have neural dependencies, install them from the project root:
+
+```bash
+uv pip install -r model/neural/requirements.txt
+```

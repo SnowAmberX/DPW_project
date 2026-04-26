@@ -6,8 +6,11 @@ from app.schemas.infection import (
     InfectionSnapshotRequest,
     InfectionSnapshotResponse,
     InfectionTimelineResponse,
+    NeuralPredictionRequest,
+    NeuralPredictionResponse,
 )
 from app.services.mock_data import generate_mock_snapshot
+from app.services.neural_prediction import build_neural_prediction_timeline
 from app.services.timeline_data import build_infection_timeline
 
 logger = logging.getLogger(__name__)
@@ -40,3 +43,20 @@ def get_infection_timeline(
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return InfectionTimelineResponse(**timeline)
+
+
+@router.post("/neural-prediction", response_model=NeuralPredictionResponse)
+def get_neural_prediction(payload: NeuralPredictionRequest) -> NeuralPredictionResponse:
+    try:
+        prediction = build_neural_prediction_timeline(
+            seed_country=payload.seed_country,
+            start_date=payload.start_date,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    return NeuralPredictionResponse(**prediction)
