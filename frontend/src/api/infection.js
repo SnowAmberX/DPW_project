@@ -26,3 +26,31 @@ export async function fetchInfectionTimeline({
 
   return response.data;
 }
+
+export async function fetchTraditionalOnnxForecast({
+  baseUrl = DEFAULT_BASE_URL,
+  originCountry,
+  forecastDays = 365,
+  startDate = "",
+  stepDays = 1,
+  signal,
+} = {}) {
+  const target = `${baseUrl.replace(/\/$/, "")}/api/v1/infections/traditional-onnx/forecast`;
+
+  const payload = {
+    origin_country: originCountry,
+    forecast_days: forecastDays,
+    step_days: stepDays,
+  };
+
+  if (startDate) {
+    payload.start_date = startDate;
+  }
+
+  const response = await axios.post(target, payload, {
+    timeout: 180000,
+    signal,
+  });
+
+  return response.data;
+}

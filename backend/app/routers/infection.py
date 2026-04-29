@@ -9,6 +9,10 @@ from app.schemas.infection import (
     NeuralPredictionRequest,
     NeuralPredictionResponse,
 )
+from app.schemas.traditional_onnx import (
+    TraditionalOnnxForecastRequest,
+    TraditionalOnnxForecastResponse,
+)
 from app.services.mock_data import generate_mock_snapshot
 from app.services.neural_prediction import build_neural_prediction_timeline
 from app.services.timeline_data import build_infection_timeline

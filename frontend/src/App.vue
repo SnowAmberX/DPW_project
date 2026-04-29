@@ -1,17 +1,17 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import * as echarts from "echarts";
-import { fetchInfectionTimeline } from "./api/infection";
+import { fetchTraditionalOnnxForecast } from "./api/infection";
 
 const WORLD_MAP_SOURCES = [
   "/maps/world.json",
-  "https://echarts.apache.org/examples/data/asset/geo/world.json",
   "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson",
 ];
 const COUNTRY_METADATA_SOURCES = [
   "/maps/countries.json",
   "https://raw.githubusercontent.com/mledoze/countries/master/countries.json",
 ];
+const GEO_FETCH_TIMEOUT_MS = 9000;
 
 const COUNTRY_ALIASES = {
   "United States": "United States of America",
@@ -31,17 +31,26 @@ const MAP_TO_TIMELINE_ALIASES = Object.fromEntries(
   Object.entries(COUNTRY_ALIASES).map(([timelineName, mapName]) => [mapName, timelineName]),
 );
 
+function toISODateString(value) {
+  return value.toISOString().slice(0, 10);
+}
+
+const today = new Date();
+const defaultForecastEnd = new Date(today);
+defaultForecastEnd.setDate(defaultForecastEnd.getDate() + 90);
+
 const chartRef = ref(null);
-const loading = ref(false);
+const mapLoading = ref(false);
+const forecastLoading = ref(false);
 const errorMessage = ref("");
 const backendBaseUrl = ref(import.meta.env.VITE_BACKEND_BASE_URL || "http://127.0.0.1:8000");
-const startDate = ref("2020-01-04");
-const endDate = ref("2023-12-31");
-const stepDays = ref(1);
+const startDate = ref(toISODateString(today));
+const endDate = ref(toISODateString(defaultForecastEnd));
+const stepDays = ref(29);
 const speedMs = ref(220);
 const spreadSpeedKmPerDay = ref(680);
 const isPlaying = ref(false);
-const metric = ref("total_cases");
+const metric = ref("predicted_active_cases");
 const timelineFrames = ref([]);
 const maxInfections = ref(1);
 const currentIndex = ref(0);
@@ -54,6 +63,7 @@ const originSetByClick = ref(false);
 let chartInstance = null;
 let playTimer = null;
 let chartClickHandler = null;
+let timelineAbortController = null;
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -117,8 +127,27 @@ function normalizeNameKey(name) {
     .replace(/[^a-z0-9]/g, "");
 }
 
+function normalizeLookupKey(name) {
+  return normalizeNameKey(name).replace(/country$/, "");
+}
+
 function toTimelineCountryName(mapCountryName) {
   return MAP_TO_TIMELINE_ALIASES[mapCountryName] || mapCountryName;
+}
+
+async function fetchJsonWithTimeout(url, timeoutMs = GEO_FETCH_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    if (!response.ok) {
+      throw new Error(`request failed: ${url}`);
+    }
+    return await response.json();
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function haversineDistanceKm(origin, target) {
@@ -150,12 +179,7 @@ async function loadCountryCentroids() {
 
   for (const url of COUNTRY_METADATA_SOURCES) {
     try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`countries metadata request failed: ${url}`);
-      }
-
-      payload = await response.json();
+      payload = await fetchJsonWithTimeout(url);
       break;
     } catch (error) {
       lastError = error;
@@ -222,16 +246,70 @@ function findFirstPositiveDayIndex(countryName) {
   return 0;
 }
 
+function resolveTimelineCountryNameInFrame(mapCountryName, frame) {
+  const timelineCountries = Object.keys(frame?.infections_by_country || {});
+  if (!timelineCountries.length) {
+    return "";
+  }
+
+  const timelineName = toTimelineCountryName(mapCountryName);
+  if (timelineCountries.includes(timelineName)) {
+    return timelineName;
+  }
+
+  const normalizedToCountry = new Map(
+    timelineCountries.map((name) => [normalizeLookupKey(name), name]),
+  );
+
+  const candidates = [
+    timelineName,
+    mapCountryName,
+    COUNTRY_ALIASES[mapCountryName],
+    MAP_TO_TIMELINE_ALIASES[mapCountryName],
+  ].filter(Boolean);
+
+  for (const candidate of candidates) {
+    const resolved = normalizedToCountry.get(normalizeLookupKey(candidate));
+    if (resolved) {
+      return resolved;
+    }
+  }
+
+  return "";
+}
+
+function calculateForecastDays() {
+  const start = new Date(startDate.value);
+  const end = new Date(endDate.value);
+
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+    return 365;
+  }
+
+  const diffMs = end.getTime() - start.getTime();
+  if (diffMs < 0) {
+    return 365;
+  }
+
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
+  return Math.min(730, Math.max(1, diffDays));
+}
+
 function selectOriginCountry(countryName) {
   if (!countryName) {
     return;
   }
 
   originCountry.value = countryName;
-  originStartIndex.value = findFirstPositiveDayIndex(countryName);
-  currentIndex.value = originStartIndex.value;
   originSetByClick.value = true;
-  startPlayback();
+
+  loadTimeline(countryName)
+    .then(() => {
+      startPlayback();
+    })
+    .catch(() => {
+      // loadTimeline already sets user-facing errors.
+    });
 }
 
 function buildSimulatedFrame(frame, frameIndex) {
@@ -307,6 +385,27 @@ function formatInfections(value) {
   return numberFormatter.format(Math.max(0, Math.round(Number(value) || 0)));
 }
 
+function toNiceUpperBound(value) {
+  const numeric = Math.max(0, Number(value) || 0);
+  if (!numeric) {
+    return 100000;
+  }
+
+  const magnitude = 10 ** Math.floor(Math.log10(numeric));
+  const normalized = numeric / magnitude;
+
+  let factor = 10;
+  if (normalized <= 1) {
+    factor = 1;
+  } else if (normalized <= 2) {
+    factor = 2;
+  } else if (normalized <= 5) {
+    factor = 5;
+  }
+
+  return factor * magnitude;
+}
+
 async function ensureWorldMap() {
   if (worldMapReady.value || echarts.getMap("world")) {
     worldMapReady.value = true;
@@ -317,12 +416,7 @@ async function ensureWorldMap() {
 
   for (const url of WORLD_MAP_SOURCES) {
     try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch world map from ${url}`);
-      }
-
-      const worldGeoJson = await response.json();
+      const worldGeoJson = await fetchJsonWithTimeout(url);
       echarts.registerMap("world", worldGeoJson);
       worldMapReady.value = true;
       return;
@@ -336,7 +430,12 @@ async function ensureWorldMap() {
 
 function mapOption() {
   const frame = renderedFrame.value;
-  const visualMax = Math.max(1, Number(maxInfections.value) || 1);
+  const frameValues = Object.values(frame?.infections_by_country || {}).map((value) =>
+    Math.max(0, Number(value) || 0),
+  );
+  const frameMax = frameValues.length ? Math.max(...frameValues) : 0;
+  const backendMax = Math.max(0, Number(maxInfections.value) || 0);
+  const visualMax = toNiceUpperBound(Math.max(frameMax, backendMax));
 
   return {
     animationDurationUpdate: 620,
@@ -346,7 +445,7 @@ function mapOption() {
       formatter: (params) => {
         const countryName = params.name || "Unknown";
         const infected = params.value == null ? 0 : Number(params.value);
-        return `${countryName}<br/>Infections: ${formatInfections(infected)}`;
+        return `${countryName}<br/>Active cases: ${formatInfections(infected)}`;
       },
     },
     visualMap: {
@@ -399,24 +498,21 @@ function renderChart() {
     chartInstance = echarts.init(chartRef.value);
 
     chartClickHandler = (params) => {
-      if (!params || params.componentType !== "series") {
+      if (!params) {
         return;
       }
 
-      const timelineName = toTimelineCountryName(params.name || "");
-      if (!timelineName) {
+      const rawCountry = String(params.name || "").trim();
+      if (!rawCountry) {
         return;
       }
 
       const frame = currentFrame.value;
-      const existsInFrame = Object.prototype.hasOwnProperty.call(
-        frame?.infections_by_country || {},
-        timelineName,
-      );
+      const resolvedCountry = resolveTimelineCountryNameInFrame(rawCountry, frame);
+      const fallbackCountry = toTimelineCountryName(rawCountry) || rawCountry;
 
-      if (existsInFrame) {
-        selectOriginCountry(timelineName);
-      }
+      // Never silently ignore clicks; unresolved names are validated by backend.
+      selectOriginCountry(resolvedCountry || fallbackCountry);
     };
 
     chartInstance.on("click", chartClickHandler);
@@ -478,22 +574,50 @@ function resizeChart() {
   }
 }
 
-async function loadTimeline() {
-  loading.value = true;
+async function requestTraditionalForecast(effectiveOrigin, signal) {
+  return fetchTraditionalOnnxForecast({
+    baseUrl: backendBaseUrl.value,
+    originCountry: effectiveOrigin,
+    startDate: startDate.value,
+    forecastDays: calculateForecastDays(),
+    stepDays: Number(stepDays.value) || 1,
+    signal,
+  });
+}
+
+async function loadTimeline(selectedOrigin = "") {
+  const sanitizedOrigin = typeof selectedOrigin === "string" ? selectedOrigin.trim() : "";
+  const fallbackOrigin = originCountry.value || "";
+  const effectiveOrigin = sanitizedOrigin || fallbackOrigin;
+
+  if (!effectiveOrigin) {
+    errorMessage.value = "Please click a country on the map to start forecast.";
+    return;
+  }
+
+  if (timelineAbortController) {
+    timelineAbortController.abort();
+  }
+
+  timelineAbortController = new AbortController();
+  const currentController = timelineAbortController;
+
+  forecastLoading.value = true;
   errorMessage.value = "";
   stopPlayback();
 
   try {
-    const payload = await fetchInfectionTimeline({
-      baseUrl: backendBaseUrl.value,
-      startDate: startDate.value,
-      endDate: endDate.value,
-      stepDays: Number(stepDays.value) || 14,
-    });
+    const payload = await requestTraditionalForecast(effectiveOrigin, currentController.signal);
+
+    if (timelineAbortController !== currentController) {
+      return;
+    }
 
     timelineFrames.value = Array.isArray(payload.frames) ? payload.frames : [];
     maxInfections.value = Math.max(1, Number(payload.max_infections) || 1);
-    metric.value = payload.metric || "total_cases";
+    metric.value = payload.metric || "predicted_active_cases";
+
+    originCountry.value = payload.origin_country_name || effectiveOrigin;
 
     if (timelineFrames.value.length && !originCountry.value) {
       const firstFrameCountries = Object.keys(timelineFrames.value[0].infections_by_country || {});
@@ -509,14 +633,19 @@ async function loadTimeline() {
     currentIndex.value = originStartIndex.value;
 
     if (!timelineFrames.value.length) {
-      errorMessage.value = "接口返回了空时间序列，请调整日期区间或采样步长。";
+      errorMessage.value = "Forecast result is empty. Please adjust date range or step size and try again.";
     }
 
     await nextTick();
     renderChart();
   } catch (error) {
+    const isCanceled = error?.name === "CanceledError" || error?.code === "ERR_CANCELED";
+    if (isCanceled) {
+      return;
+    }
+
     const backendDetail = error?.response?.data?.detail;
-    errorMessage.value = backendDetail || error?.message || "加载时间序列失败。";
+    errorMessage.value = backendDetail || error?.message || "Failed to load traditional forecast.";
 
     timelineFrames.value = [];
     currentIndex.value = 0;
@@ -524,7 +653,10 @@ async function loadTimeline() {
     await nextTick();
     renderChart();
   } finally {
-    loading.value = false;
+    if (timelineAbortController === currentController) {
+      timelineAbortController = null;
+      forecastLoading.value = false;
+    }
   }
 }
 
@@ -541,18 +673,28 @@ watch(speedMs, () => {
 });
 
 onMounted(async () => {
+  mapLoading.value = true;
+
   try {
     await ensureWorldMap();
     await loadCountryCentroids();
+    await nextTick();
+    renderChart();
   } catch (error) {
-    errorMessage.value = error?.message || "世界地图加载失败。";
+    errorMessage.value = error?.message || "Failed to load world map.";
+  } finally {
+    mapLoading.value = false;
   }
 
-  await loadTimeline();
   window.addEventListener("resize", resizeChart);
 });
 
 onBeforeUnmount(() => {
+  if (timelineAbortController) {
+    timelineAbortController.abort();
+    timelineAbortController = null;
+  }
+
   stopPlayback();
   window.removeEventListener("resize", resizeChart);
 
@@ -578,7 +720,7 @@ onBeforeUnmount(() => {
         <p class="hero-tag">COVID-19 Geo Timeline</p>
         <h1>Global Infection Prediction</h1>
         <p class="hero-subtitle">
-          Base on real historical data, simulate the global spread of COVID-19 with user-defined parameters. Click on the map to set the origin country and watch the infection spread over time. Adjust the timeline and playback settings to explore different scenarios.
+          Use traditional ONNX models to estimate active cases from a selected origin country. Click the map to choose the origin, then compare how spread speed and timeline settings affect the global trajectory.
         </p>
       </header>
 
@@ -600,7 +742,7 @@ onBeforeUnmount(() => {
 
         <div class="field-group">
           <label for="step-days">Step (days)</label>
-          <input id="step-days" v-model.number="stepDays" min="1" max="90" type="number" />
+          <input id="step-days" v-model.number="stepDays" min="1" max="30" type="number" />
         </div>
 
         <div class="field-group">
@@ -621,10 +763,10 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="button-row">
-          <button class="primary" :disabled="loading" @click="loadTimeline">
-            {{ loading ? "loading..." : "reload" }}
+          <button class="primary" :disabled="mapLoading || forecastLoading || !originCountry" @click="loadTimeline(originCountry)">
+            {{ forecastLoading ? "loading..." : "reload" }}
           </button>
-          <button class="secondary" :disabled="loading || !timelineFrames.length" @click="togglePlayback">
+          <button class="secondary" :disabled="mapLoading || forecastLoading || !timelineFrames.length" @click="togglePlayback">
             {{ isPlaying ? "pause" : "play" }}
           </button>
         </div>
@@ -633,8 +775,10 @@ onBeforeUnmount(() => {
       <section class="visual-grid">
         <article class="map-card">
           <div class="map-header">
-            <p class="map-title">Infection Heatmap</p>
+            <p class="map-title">Active Cases Heatmap</p>
             <div class="map-meta">
+              <span v-if="mapLoading" class="chip">Map loading...</span>
+              <span v-else-if="forecastLoading" class="chip">Forecast loading...</span>
               <span class="chip">Date {{ currentFrame?.date || "--" }}</span>
               <span class="chip">Frame {{ progressText }}</span>
               <span class="chip">Origin {{ activeOriginCountry || "--" }}</span>
@@ -642,6 +786,8 @@ onBeforeUnmount(() => {
               <span class="chip">Reach {{ Math.round(simulationRadiusKm) }} km</span>
             </div>
           </div>
+
+          <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
 
           <div ref="chartRef" class="map-canvas"></div>
 
@@ -663,7 +809,7 @@ onBeforeUnmount(() => {
 
         <aside class="rank-card">
           <h2>Top 8 Countries</h2>
-          <p class="rank-hint">Sorted by total infections</p>
+          <p class="rank-hint">Sorted by estimated active cases</p>
 
           <ul v-if="topCountries.length" class="rank-list">
             <li v-for="(item, index) in topCountries" :key="item.name">
@@ -676,7 +822,6 @@ onBeforeUnmount(() => {
         </aside>
       </section>
 
-      <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
     </main>
   </div>
 </template>
@@ -974,12 +1119,14 @@ button:not(:disabled):hover {
 }
 
 .error-banner {
-  margin: 0;
+  margin: 0 0 8px;
   background: #ffe7dc;
   border: 1px solid #f3b097;
   color: #8a2f16;
   border-radius: 12px;
   padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 @media (max-width: 1150px) {

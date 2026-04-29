@@ -1,0 +1,10 @@
+Simple ONNX Training Result
+selected_countries: 237
+trained_country_models: 237
+fallback_countries: 0
+global_test_r2: 0.0599
+global_test_smape: 197.33%
+
+Notes:
+- Features keep regional and neighbor influence.
+- Target uses smoothed next-day cases to better capture epidemic phases.

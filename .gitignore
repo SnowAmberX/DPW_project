@@ -169,3 +169,7 @@ dump
 *.tar.gz
 
 *.docx
+*.joblib
+*.json
+
+.claude/
