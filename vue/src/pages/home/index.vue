@@ -8,9 +8,9 @@
         workflows. The map remains available as supporting context rather than the primary analysis surface.
       </p>
     </div>
-    <div class="hero-image-card">
+    <!-- <div class="hero-image-card">
       <img class="hero-image" src="/illustrations/home-overview.svg" alt="Home illustration" />
-    </div>
+    </div> -->
   </section>
   <div class="page-grid">
     <HomeCharts />
