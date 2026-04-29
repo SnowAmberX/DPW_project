@@ -109,7 +109,6 @@ out/
 dist/
 build/
 output/
-public/
 .cache/
 .parcel-cache/
 .next/
