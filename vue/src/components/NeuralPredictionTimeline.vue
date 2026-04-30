@@ -156,7 +156,8 @@ function formatCases(value) {
 function buildPredictionRequest(seedValue) {
   if (activeModelId.value === "traditional_onnx") {
     return {
-      origin_country: seedValue
+      origin_country: seedValue,
+      forecast_days: 100
     };
   }
 
