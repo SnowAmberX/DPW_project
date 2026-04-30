@@ -7,6 +7,18 @@ const COUNTRY_METADATA_SOURCES = [
   "https://raw.githubusercontent.com/mledoze/countries/master/countries.json"
 ];
 const CLIP_QUANTILE = 0.995;
+const MODEL_OPTIONS = [
+  {
+    id: "neural",
+    label: "Neural (GNN-RNN)",
+    endpoint: "/api/v1/infections/neural-prediction"
+  },
+  {
+    id: "traditional_onnx",
+    label: "ML_model ONNX",
+    endpoint: "/api/v1/infections/traditional-onnx-forecast"
+  }
+];
 
 const COUNTRY_ALIASES = {
   "United States": "United States of America",
@@ -25,6 +37,8 @@ const COUNTRY_ALIASES = {
 
 const mapRef = ref(null);
 const backendBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL || "http://127.0.0.1:8000";
+const activeModelId = ref(MODEL_OPTIONS[0].id);
+const lastSeedValue = ref("");
 
 const speedMs = ref(240);
 const spreadSpeedKmPerDay = ref(800);
@@ -52,6 +66,11 @@ const numberFormatter = new Intl.NumberFormat("en-US", {
 
 let playTimer = null;
 let plotlyClickHandler = null;
+
+const activeModel = computed(
+  () => MODEL_OPTIONS.find((option) => option.id === activeModelId.value) || MODEL_OPTIONS[0]
+);
+const activeModelLabel = computed(() => activeModel.value.label);
 
 const currentFrame = computed(() => timelineFrames.value[currentIndex.value] || null);
 const progressText = computed(() => {
@@ -132,6 +151,46 @@ function normalizeNameKey(name) {
 
 function formatCases(value) {
   return numberFormatter.format(Math.max(0, Number(value) || 0));
+}
+
+function buildPredictionRequest(seedValue) {
+  if (activeModelId.value === "traditional_onnx") {
+    return {
+      origin_country: seedValue
+    };
+  }
+
+  return {
+    seed_country: seedValue
+  };
+}
+
+function normalizePredictionResponse(payload, modelId) {
+  if (modelId === "traditional_onnx") {
+    const frames = Array.isArray(payload.frames)
+      ? payload.frames.map((frame, index) => ({
+          day: index + 1,
+          date: frame?.date,
+          new_cases_by_country: frame?.infections_by_country || {}
+        }))
+      : [];
+
+    return {
+      frames,
+      metric: payload.metric || "predicted_active_cases",
+      maxValue: Math.max(0, Number(payload.max_infections) || 0),
+      seedCode: payload.origin_country_code || "",
+      seedName: payload.origin_country_name || ""
+    };
+  }
+
+  return {
+    frames: Array.isArray(payload.frames) ? payload.frames : [],
+    metric: payload.metric || "predicted_new_cases",
+    maxValue: Math.max(0, Number(payload.max_new_cases) || 0),
+    seedCode: payload.seed_country_code || "",
+    seedName: payload.seed_country_name || ""
+  };
 }
 
 function sigmoid(x) {
@@ -391,7 +450,7 @@ async function loadCountryMetadata() {
   }
 
   if (!payload) {
-    throw lastError || new Error("国家元数据加载失败。");
+    throw lastError || new Error("Failed to load country metadata.");
   }
 
   const centroids = new Map();
@@ -472,26 +531,51 @@ function togglePlayback() {
   }
 }
 
+function toggleModel() {
+  if (loading.value) {
+    return;
+  }
+
+  const currentIndexValue = MODEL_OPTIONS.findIndex((option) => option.id === activeModelId.value);
+  const nextIndex = currentIndexValue === -1 ? 0 : (currentIndexValue + 1) % MODEL_OPTIONS.length;
+  activeModelId.value = MODEL_OPTIONS[nextIndex].id;
+  stopPlayback();
+
+  if (lastSeedValue.value) {
+    loadPrediction(lastSeedValue.value);
+    return;
+  }
+
+  errorMessage.value = "";
+  timelineFrames.value = [];
+  currentIndex.value = 0;
+  maxNewCases.value = 0;
+  seedCountryCode.value = "";
+  seedCountryName.value = "";
+}
+
 async function loadPrediction(seedCountry) {
   const normalizedSeed = String(seedCountry || "").trim();
   if (!normalizedSeed) {
     return;
   }
 
+  const modelId = activeModelId.value;
+  const modelConfig = activeModel.value;
+  lastSeedValue.value = normalizedSeed;
+
   loading.value = true;
   errorMessage.value = "";
   stopPlayback();
 
   try {
-    const endpoint = `${backendBaseUrl.replace(/\/$/, "")}/api/v1/infections/neural-prediction`;
+    const endpoint = `${backendBaseUrl.replace(/\/$/, "")}${modelConfig.endpoint}`;
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        seed_country: normalizedSeed
-      })
+      body: JSON.stringify(buildPredictionRequest(normalizedSeed))
     });
 
     const data = await response.json();
@@ -500,21 +584,22 @@ async function loadPrediction(seedCountry) {
       throw new Error(detail || `Request failed with status ${response.status}`);
     }
 
-    timelineFrames.value = Array.isArray(data.frames) ? data.frames : [];
-    metric.value = data.metric || "predicted_new_cases";
-    maxNewCases.value = Math.max(0, Number(data.max_new_cases) || 0);
-    seedCountryCode.value = data.seed_country_code || "";
-    seedCountryName.value = data.seed_country_name || "";
+    const normalized = normalizePredictionResponse(data, modelId);
+    timelineFrames.value = normalized.frames;
+    metric.value = normalized.metric;
+    maxNewCases.value = normalized.maxValue;
+    seedCountryCode.value = normalized.seedCode;
+    seedCountryName.value = normalized.seedName;
     currentIndex.value = 0;
 
     if (!timelineFrames.value.length) {
-      errorMessage.value = "接口返回了空预测序列。";
+      errorMessage.value = "The API returned an empty forecast.";
     }
 
     await nextTick();
     await renderPlot();
   } catch (error) {
-    errorMessage.value = error?.message || "加载预测失败。";
+    errorMessage.value = error?.message || "Failed to load forecast.";
     timelineFrames.value = [];
     currentIndex.value = 0;
     maxNewCases.value = 0;
@@ -543,7 +628,7 @@ onMounted(async () => {
     await nextTick();
     await renderPlot();
   } catch (error) {
-    errorMessage.value = error?.message || "地图初始化失败。";
+    errorMessage.value = error?.message || "Failed to initialize the map.";
   }
 });
 
@@ -565,17 +650,22 @@ onBeforeUnmount(async () => {
   <section class="prediction-card">
     <header class="header-row">
       <div>
-        <p class="eyebrow">Neural Forecast API</p>
+        <p class="eyebrow">{{ activeModelLabel }} Forecast API</p>
         <h3 class="title">Global Outbreak Map by Seed Country (Plotly)</h3>
       </div>
       <p class="hint">Metric: {{ metric }}</p>
     </header>
 
     <div class="toolbar-row">
-      <p class="hint">点击地图中的国家自动向后端请求预测（仅发送 seed_country）。</p>
-      <button class="secondary" :disabled="loading || !timelineFrames.length" @click="togglePlayback">
-        {{ isPlaying ? "pause" : "play" }}
-      </button>
+      <p class="hint">Click a country on the map to request a forecast for the active model.</p>
+      <div class="toolbar-actions">
+        <button class="ghost" :disabled="loading" @click="toggleModel">
+          Model: {{ activeModelLabel }}
+        </button>
+        <button class="secondary" :disabled="loading || !timelineFrames.length" @click="togglePlayback">
+          {{ isPlaying ? "pause" : "play" }}
+        </button>
+      </div>
     </div>
 
     <p v-if="errorMessage" class="error-banner">{{ errorMessage }}</p>
@@ -584,6 +674,7 @@ onBeforeUnmount(async () => {
       <div class="meta-row">
         <span class="chip">Seed {{ seedCountryCode || "--" }}</span>
         <span class="chip">Name {{ seedCountryName || "--" }}</span>
+        <span class="chip">Model {{ activeModelLabel }}</span>
         <span class="chip">Date {{ currentFrame?.date || "--" }}</span>
         <span class="chip">Frame {{ progressText }}</span>
         <span class="chip">Pred Max {{ formatCases(maxNewCases) }}</span>
@@ -617,7 +708,7 @@ onBeforeUnmount(async () => {
       </li>
     </ul>
 
-    <p v-else-if="!loading" class="hint">点击任意国家开始预测并显示传播地图。</p>
+    <p v-else-if="!loading" class="hint">Click any country to request a forecast and render the spread map.</p>
   </section>
 </template>
 
@@ -660,6 +751,12 @@ onBeforeUnmount(async () => {
   gap: 0.8rem;
 }
 
+.toolbar-actions {
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
 button {
   height: 40px;
   border: 0;
@@ -682,6 +779,12 @@ button:not(:disabled):hover {
 .secondary {
   background: linear-gradient(120deg, #1d6b57, #2f8a72);
   color: #f3fff9;
+}
+
+.ghost {
+  background: #f4efe6;
+  color: #27403a;
+  border: 1px solid #cfd5c5;
 }
 
 .error-banner {

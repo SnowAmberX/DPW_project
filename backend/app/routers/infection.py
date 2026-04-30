@@ -16,6 +16,9 @@ from app.schemas.traditional_onnx import (
 from app.services.mock_data import generate_mock_snapshot
 from app.services.neural_prediction import build_neural_prediction_timeline
 from app.services.timeline_data import build_infection_timeline
+from app.services.traditional_onnx.traditional_onnx_forecast_service import (
+    forecast_traditional_onnx_global_infections,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/infections", tags=["infections"])
@@ -25,7 +28,7 @@ router = APIRouter(prefix="/api/v1/infections", tags=["infections"])
 def get_infection_snapshot(payload: InfectionSnapshotRequest) -> InfectionSnapshotResponse:
     country_code = payload.country_code.upper()
 
-    # 测试联通性时，在后端打印前端传来的国家代码
+    # Log incoming country code to verify connectivity.
     print(f"[backend] country_code received: {country_code}")
     logger.info("country_code received: %s", country_code)
 
@@ -64,3 +67,24 @@ def get_neural_prediction(payload: NeuralPredictionRequest) -> NeuralPredictionR
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return NeuralPredictionResponse(**prediction)
+
+
+@router.post("/traditional-onnx-forecast", response_model=TraditionalOnnxForecastResponse)
+def get_traditional_onnx_forecast(
+    payload: TraditionalOnnxForecastRequest,
+) -> TraditionalOnnxForecastResponse:
+    try:
+        forecast = forecast_traditional_onnx_global_infections(
+            origin_country=payload.origin_country,
+            forecast_days=payload.forecast_days,
+            start_date=payload.start_date,
+            step_days=payload.step_days,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    return TraditionalOnnxForecastResponse(**forecast)

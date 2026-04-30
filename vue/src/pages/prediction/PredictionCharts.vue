@@ -1,5 +1,8 @@
 <template>
-  <ChartSlot title="Future Outbreak Forecast" description="输入 seed-country 后调用 neural API，按日期展示各国预测新增病例。">
+  <ChartSlot
+    title="Future Outbreak Forecast"
+    description="Click a seed country to call the selected model and render forecast frames by date."
+  >
     <NeuralPredictionTimeline />
   </ChartSlot>
 </template>

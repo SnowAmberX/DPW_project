@@ -14,6 +14,7 @@ uvicorn app.main:app --reload --port 8000
 - `POST /api/v1/infections/snapshot`
 - `GET /api/v1/infections/timeline`
 - `POST /api/v1/infections/neural-prediction`
+- `POST /api/v1/infections/traditional-onnx-forecast`
 
 Request body example:
 
@@ -89,6 +90,43 @@ Neural prediction response example (simplified):
       "new_cases_by_country": {
         "United States": 12000.12,
         "Japan": 2300.88
+      }
+    }
+  ]
+}
+```
+
+Traditional ONNX forecast request example:
+
+```json
+{
+  "origin_country": "USA",
+  "forecast_days": 365,
+  "step_days": 7,
+  "start_date": "2026-01-01"
+}
+```
+
+Traditional ONNX response example (simplified):
+
+```json
+{
+  "model_family": "traditional_onnx",
+  "metric": "predicted_active_cases",
+  "origin_country_code": "USA",
+  "origin_country_name": "United States",
+  "frame_count": 52,
+  "forecast_days": 365,
+  "step_days": 7,
+  "start_date": "2026-01-08",
+  "end_date": "2026-12-31",
+  "max_infections": 98765,
+  "frames": [
+    {
+      "date": "2026-01-08",
+      "infections_by_country": {
+        "United States": 12345,
+        "Japan": 234
       }
     }
   ]
