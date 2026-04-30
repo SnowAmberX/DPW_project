@@ -5,9 +5,9 @@
       Focus this page on mortality-oriented indicators, comparative time trends, and turning-point style interpretation.
     </p>
   </section>
-  <!-- <section class="panel-card page-image-block">
+  <section class="panel-card page-image-block">
     <img class="page-image" src="/illustrations/mortality-vaccination.svg" alt="Vaccination and mortality illustration" />
-  </section> -->
+  </section>
   <div class="page-grid">
     <MortalityVaccinationCharts />
   </div>

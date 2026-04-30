@@ -9,9 +9,9 @@
       Focus this page on explanatory relationships between rollout indicators and downstream outcome signals.
     </p>
   </section>
-  <!-- <section class="panel-card page-image-block">
+  <section class="panel-card page-image-block">
     <img class="page-image" src="/illustrations/cases-vaccination.svg" alt="Vaccination and new cases illustration" />
-  </section> -->
+  </section>
   <div class="page-grid">
     <CasesVaccinationCharts />
   </div>
