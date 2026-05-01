@@ -1,0 +1,1675 @@
+{
+  "model_version": "country_v5_simple_epicurve",
+  "generated_at_utc": "2026-04-20 01:51:42",
+  "global_fallback": {
+    "onnx_path": "global_fallback_model/lightgbm_model.onnx",
+    "joblib_path": "global_fallback_model/lightgbm_model.joblib",
+    "feature_columns_path": "global_fallback_model/feature_columns.json",
+    "metrics": {
+      "test_r2": 0.05991371426823244,
+      "test_rmse": 937.8798753465641,
+      "test_smape": 197.3302523902244
+    }
+  },
+  "countries": {
+    "ABW": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ABW/lightgbm_model.onnx",
+      "joblib_path": "country_models/ABW/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ABW/feature_columns.json"
+    },
+    "AFG": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/AFG/lightgbm_model.onnx",
+      "joblib_path": "country_models/AFG/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/AFG/feature_columns.json"
+    },
+    "AGO": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/AGO/lightgbm_model.onnx",
+      "joblib_path": "country_models/AGO/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/AGO/feature_columns.json"
+    },
+    "AIA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/AIA/lightgbm_model.onnx",
+      "joblib_path": "country_models/AIA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/AIA/feature_columns.json"
+    },
+    "ALB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ALB/lightgbm_model.onnx",
+      "joblib_path": "country_models/ALB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ALB/feature_columns.json"
+    },
+    "AND": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/AND/lightgbm_model.onnx",
+      "joblib_path": "country_models/AND/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/AND/feature_columns.json"
+    },
+    "ARE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ARE/lightgbm_model.onnx",
+      "joblib_path": "country_models/ARE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ARE/feature_columns.json"
+    },
+    "ARG": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ARG/lightgbm_model.onnx",
+      "joblib_path": "country_models/ARG/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ARG/feature_columns.json"
+    },
+    "ARM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ARM/lightgbm_model.onnx",
+      "joblib_path": "country_models/ARM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ARM/feature_columns.json"
+    },
+    "ASM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ASM/lightgbm_model.onnx",
+      "joblib_path": "country_models/ASM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ASM/feature_columns.json"
+    },
+    "ATG": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ATG/lightgbm_model.onnx",
+      "joblib_path": "country_models/ATG/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ATG/feature_columns.json"
+    },
+    "AUS": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/AUS/lightgbm_model.onnx",
+      "joblib_path": "country_models/AUS/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/AUS/feature_columns.json"
+    },
+    "AUT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/AUT/lightgbm_model.onnx",
+      "joblib_path": "country_models/AUT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/AUT/feature_columns.json"
+    },
+    "AZE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/AZE/lightgbm_model.onnx",
+      "joblib_path": "country_models/AZE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/AZE/feature_columns.json"
+    },
+    "BDI": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BDI/lightgbm_model.onnx",
+      "joblib_path": "country_models/BDI/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BDI/feature_columns.json"
+    },
+    "BEL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BEL/lightgbm_model.onnx",
+      "joblib_path": "country_models/BEL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BEL/feature_columns.json"
+    },
+    "BEN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BEN/lightgbm_model.onnx",
+      "joblib_path": "country_models/BEN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BEN/feature_columns.json"
+    },
+    "BES": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BES/lightgbm_model.onnx",
+      "joblib_path": "country_models/BES/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BES/feature_columns.json"
+    },
+    "BFA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BFA/lightgbm_model.onnx",
+      "joblib_path": "country_models/BFA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BFA/feature_columns.json"
+    },
+    "BGD": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BGD/lightgbm_model.onnx",
+      "joblib_path": "country_models/BGD/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BGD/feature_columns.json"
+    },
+    "BGR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BGR/lightgbm_model.onnx",
+      "joblib_path": "country_models/BGR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BGR/feature_columns.json"
+    },
+    "BHR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BHR/lightgbm_model.onnx",
+      "joblib_path": "country_models/BHR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BHR/feature_columns.json"
+    },
+    "BHS": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BHS/lightgbm_model.onnx",
+      "joblib_path": "country_models/BHS/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BHS/feature_columns.json"
+    },
+    "BIH": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BIH/lightgbm_model.onnx",
+      "joblib_path": "country_models/BIH/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BIH/feature_columns.json"
+    },
+    "BLM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BLM/lightgbm_model.onnx",
+      "joblib_path": "country_models/BLM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BLM/feature_columns.json"
+    },
+    "BLR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BLR/lightgbm_model.onnx",
+      "joblib_path": "country_models/BLR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BLR/feature_columns.json"
+    },
+    "BLZ": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BLZ/lightgbm_model.onnx",
+      "joblib_path": "country_models/BLZ/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BLZ/feature_columns.json"
+    },
+    "BMU": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BMU/lightgbm_model.onnx",
+      "joblib_path": "country_models/BMU/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BMU/feature_columns.json"
+    },
+    "BOL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BOL/lightgbm_model.onnx",
+      "joblib_path": "country_models/BOL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BOL/feature_columns.json"
+    },
+    "BRA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BRA/lightgbm_model.onnx",
+      "joblib_path": "country_models/BRA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BRA/feature_columns.json"
+    },
+    "BRB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BRB/lightgbm_model.onnx",
+      "joblib_path": "country_models/BRB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BRB/feature_columns.json"
+    },
+    "BRN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BRN/lightgbm_model.onnx",
+      "joblib_path": "country_models/BRN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BRN/feature_columns.json"
+    },
+    "BTN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BTN/lightgbm_model.onnx",
+      "joblib_path": "country_models/BTN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BTN/feature_columns.json"
+    },
+    "BWA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/BWA/lightgbm_model.onnx",
+      "joblib_path": "country_models/BWA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/BWA/feature_columns.json"
+    },
+    "CAF": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CAF/lightgbm_model.onnx",
+      "joblib_path": "country_models/CAF/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CAF/feature_columns.json"
+    },
+    "CAN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CAN/lightgbm_model.onnx",
+      "joblib_path": "country_models/CAN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CAN/feature_columns.json"
+    },
+    "CHE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CHE/lightgbm_model.onnx",
+      "joblib_path": "country_models/CHE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CHE/feature_columns.json"
+    },
+    "CHL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CHL/lightgbm_model.onnx",
+      "joblib_path": "country_models/CHL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CHL/feature_columns.json"
+    },
+    "CHN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CHN/lightgbm_model.onnx",
+      "joblib_path": "country_models/CHN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CHN/feature_columns.json"
+    },
+    "CIV": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CIV/lightgbm_model.onnx",
+      "joblib_path": "country_models/CIV/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CIV/feature_columns.json"
+    },
+    "CMR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CMR/lightgbm_model.onnx",
+      "joblib_path": "country_models/CMR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CMR/feature_columns.json"
+    },
+    "COD": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/COD/lightgbm_model.onnx",
+      "joblib_path": "country_models/COD/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/COD/feature_columns.json"
+    },
+    "COG": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/COG/lightgbm_model.onnx",
+      "joblib_path": "country_models/COG/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/COG/feature_columns.json"
+    },
+    "COK": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/COK/lightgbm_model.onnx",
+      "joblib_path": "country_models/COK/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/COK/feature_columns.json"
+    },
+    "COL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/COL/lightgbm_model.onnx",
+      "joblib_path": "country_models/COL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/COL/feature_columns.json"
+    },
+    "COM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/COM/lightgbm_model.onnx",
+      "joblib_path": "country_models/COM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/COM/feature_columns.json"
+    },
+    "CPV": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CPV/lightgbm_model.onnx",
+      "joblib_path": "country_models/CPV/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CPV/feature_columns.json"
+    },
+    "CRI": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CRI/lightgbm_model.onnx",
+      "joblib_path": "country_models/CRI/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CRI/feature_columns.json"
+    },
+    "CUB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CUB/lightgbm_model.onnx",
+      "joblib_path": "country_models/CUB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CUB/feature_columns.json"
+    },
+    "CUW": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CUW/lightgbm_model.onnx",
+      "joblib_path": "country_models/CUW/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CUW/feature_columns.json"
+    },
+    "CYM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CYM/lightgbm_model.onnx",
+      "joblib_path": "country_models/CYM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CYM/feature_columns.json"
+    },
+    "CYP": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CYP/lightgbm_model.onnx",
+      "joblib_path": "country_models/CYP/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CYP/feature_columns.json"
+    },
+    "CZE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/CZE/lightgbm_model.onnx",
+      "joblib_path": "country_models/CZE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/CZE/feature_columns.json"
+    },
+    "DEU": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/DEU/lightgbm_model.onnx",
+      "joblib_path": "country_models/DEU/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/DEU/feature_columns.json"
+    },
+    "DJI": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/DJI/lightgbm_model.onnx",
+      "joblib_path": "country_models/DJI/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/DJI/feature_columns.json"
+    },
+    "DMA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/DMA/lightgbm_model.onnx",
+      "joblib_path": "country_models/DMA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/DMA/feature_columns.json"
+    },
+    "DNK": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/DNK/lightgbm_model.onnx",
+      "joblib_path": "country_models/DNK/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/DNK/feature_columns.json"
+    },
+    "DOM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/DOM/lightgbm_model.onnx",
+      "joblib_path": "country_models/DOM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/DOM/feature_columns.json"
+    },
+    "DZA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/DZA/lightgbm_model.onnx",
+      "joblib_path": "country_models/DZA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/DZA/feature_columns.json"
+    },
+    "ECU": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ECU/lightgbm_model.onnx",
+      "joblib_path": "country_models/ECU/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ECU/feature_columns.json"
+    },
+    "EGY": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/EGY/lightgbm_model.onnx",
+      "joblib_path": "country_models/EGY/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/EGY/feature_columns.json"
+    },
+    "ERI": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ERI/lightgbm_model.onnx",
+      "joblib_path": "country_models/ERI/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ERI/feature_columns.json"
+    },
+    "ESP": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ESP/lightgbm_model.onnx",
+      "joblib_path": "country_models/ESP/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ESP/feature_columns.json"
+    },
+    "EST": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/EST/lightgbm_model.onnx",
+      "joblib_path": "country_models/EST/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/EST/feature_columns.json"
+    },
+    "ETH": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ETH/lightgbm_model.onnx",
+      "joblib_path": "country_models/ETH/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ETH/feature_columns.json"
+    },
+    "FIN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/FIN/lightgbm_model.onnx",
+      "joblib_path": "country_models/FIN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/FIN/feature_columns.json"
+    },
+    "FJI": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/FJI/lightgbm_model.onnx",
+      "joblib_path": "country_models/FJI/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/FJI/feature_columns.json"
+    },
+    "FLK": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/FLK/lightgbm_model.onnx",
+      "joblib_path": "country_models/FLK/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/FLK/feature_columns.json"
+    },
+    "FRA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/FRA/lightgbm_model.onnx",
+      "joblib_path": "country_models/FRA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/FRA/feature_columns.json"
+    },
+    "FRO": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/FRO/lightgbm_model.onnx",
+      "joblib_path": "country_models/FRO/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/FRO/feature_columns.json"
+    },
+    "FSM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/FSM/lightgbm_model.onnx",
+      "joblib_path": "country_models/FSM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/FSM/feature_columns.json"
+    },
+    "GAB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GAB/lightgbm_model.onnx",
+      "joblib_path": "country_models/GAB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GAB/feature_columns.json"
+    },
+    "GBR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GBR/lightgbm_model.onnx",
+      "joblib_path": "country_models/GBR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GBR/feature_columns.json"
+    },
+    "GEO": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GEO/lightgbm_model.onnx",
+      "joblib_path": "country_models/GEO/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GEO/feature_columns.json"
+    },
+    "GGY": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GGY/lightgbm_model.onnx",
+      "joblib_path": "country_models/GGY/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GGY/feature_columns.json"
+    },
+    "GHA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GHA/lightgbm_model.onnx",
+      "joblib_path": "country_models/GHA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GHA/feature_columns.json"
+    },
+    "GIB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GIB/lightgbm_model.onnx",
+      "joblib_path": "country_models/GIB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GIB/feature_columns.json"
+    },
+    "GIN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GIN/lightgbm_model.onnx",
+      "joblib_path": "country_models/GIN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GIN/feature_columns.json"
+    },
+    "GLP": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GLP/lightgbm_model.onnx",
+      "joblib_path": "country_models/GLP/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GLP/feature_columns.json"
+    },
+    "GMB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GMB/lightgbm_model.onnx",
+      "joblib_path": "country_models/GMB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GMB/feature_columns.json"
+    },
+    "GNB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GNB/lightgbm_model.onnx",
+      "joblib_path": "country_models/GNB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GNB/feature_columns.json"
+    },
+    "GNQ": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GNQ/lightgbm_model.onnx",
+      "joblib_path": "country_models/GNQ/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GNQ/feature_columns.json"
+    },
+    "GRC": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GRC/lightgbm_model.onnx",
+      "joblib_path": "country_models/GRC/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GRC/feature_columns.json"
+    },
+    "GRD": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GRD/lightgbm_model.onnx",
+      "joblib_path": "country_models/GRD/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GRD/feature_columns.json"
+    },
+    "GRL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GRL/lightgbm_model.onnx",
+      "joblib_path": "country_models/GRL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GRL/feature_columns.json"
+    },
+    "GTM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GTM/lightgbm_model.onnx",
+      "joblib_path": "country_models/GTM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GTM/feature_columns.json"
+    },
+    "GUF": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GUF/lightgbm_model.onnx",
+      "joblib_path": "country_models/GUF/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GUF/feature_columns.json"
+    },
+    "GUM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GUM/lightgbm_model.onnx",
+      "joblib_path": "country_models/GUM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GUM/feature_columns.json"
+    },
+    "GUY": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/GUY/lightgbm_model.onnx",
+      "joblib_path": "country_models/GUY/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/GUY/feature_columns.json"
+    },
+    "HKG": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/HKG/lightgbm_model.onnx",
+      "joblib_path": "country_models/HKG/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/HKG/feature_columns.json"
+    },
+    "HND": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/HND/lightgbm_model.onnx",
+      "joblib_path": "country_models/HND/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/HND/feature_columns.json"
+    },
+    "HRV": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/HRV/lightgbm_model.onnx",
+      "joblib_path": "country_models/HRV/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/HRV/feature_columns.json"
+    },
+    "HTI": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/HTI/lightgbm_model.onnx",
+      "joblib_path": "country_models/HTI/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/HTI/feature_columns.json"
+    },
+    "HUN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/HUN/lightgbm_model.onnx",
+      "joblib_path": "country_models/HUN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/HUN/feature_columns.json"
+    },
+    "IDN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/IDN/lightgbm_model.onnx",
+      "joblib_path": "country_models/IDN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/IDN/feature_columns.json"
+    },
+    "IMN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/IMN/lightgbm_model.onnx",
+      "joblib_path": "country_models/IMN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/IMN/feature_columns.json"
+    },
+    "IND": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/IND/lightgbm_model.onnx",
+      "joblib_path": "country_models/IND/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/IND/feature_columns.json"
+    },
+    "IRL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/IRL/lightgbm_model.onnx",
+      "joblib_path": "country_models/IRL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/IRL/feature_columns.json"
+    },
+    "IRN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/IRN/lightgbm_model.onnx",
+      "joblib_path": "country_models/IRN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/IRN/feature_columns.json"
+    },
+    "IRQ": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/IRQ/lightgbm_model.onnx",
+      "joblib_path": "country_models/IRQ/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/IRQ/feature_columns.json"
+    },
+    "ISL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ISL/lightgbm_model.onnx",
+      "joblib_path": "country_models/ISL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ISL/feature_columns.json"
+    },
+    "ISR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ISR/lightgbm_model.onnx",
+      "joblib_path": "country_models/ISR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ISR/feature_columns.json"
+    },
+    "ITA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ITA/lightgbm_model.onnx",
+      "joblib_path": "country_models/ITA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ITA/feature_columns.json"
+    },
+    "JAM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/JAM/lightgbm_model.onnx",
+      "joblib_path": "country_models/JAM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/JAM/feature_columns.json"
+    },
+    "JEY": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/JEY/lightgbm_model.onnx",
+      "joblib_path": "country_models/JEY/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/JEY/feature_columns.json"
+    },
+    "JOR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/JOR/lightgbm_model.onnx",
+      "joblib_path": "country_models/JOR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/JOR/feature_columns.json"
+    },
+    "JPN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/JPN/lightgbm_model.onnx",
+      "joblib_path": "country_models/JPN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/JPN/feature_columns.json"
+    },
+    "KAZ": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/KAZ/lightgbm_model.onnx",
+      "joblib_path": "country_models/KAZ/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/KAZ/feature_columns.json"
+    },
+    "KEN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/KEN/lightgbm_model.onnx",
+      "joblib_path": "country_models/KEN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/KEN/feature_columns.json"
+    },
+    "KGZ": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/KGZ/lightgbm_model.onnx",
+      "joblib_path": "country_models/KGZ/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/KGZ/feature_columns.json"
+    },
+    "KHM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/KHM/lightgbm_model.onnx",
+      "joblib_path": "country_models/KHM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/KHM/feature_columns.json"
+    },
+    "KIR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/KIR/lightgbm_model.onnx",
+      "joblib_path": "country_models/KIR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/KIR/feature_columns.json"
+    },
+    "KNA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/KNA/lightgbm_model.onnx",
+      "joblib_path": "country_models/KNA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/KNA/feature_columns.json"
+    },
+    "KOR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/KOR/lightgbm_model.onnx",
+      "joblib_path": "country_models/KOR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/KOR/feature_columns.json"
+    },
+    "KWT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/KWT/lightgbm_model.onnx",
+      "joblib_path": "country_models/KWT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/KWT/feature_columns.json"
+    },
+    "LAO": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LAO/lightgbm_model.onnx",
+      "joblib_path": "country_models/LAO/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LAO/feature_columns.json"
+    },
+    "LBN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LBN/lightgbm_model.onnx",
+      "joblib_path": "country_models/LBN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LBN/feature_columns.json"
+    },
+    "LBR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LBR/lightgbm_model.onnx",
+      "joblib_path": "country_models/LBR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LBR/feature_columns.json"
+    },
+    "LBY": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LBY/lightgbm_model.onnx",
+      "joblib_path": "country_models/LBY/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LBY/feature_columns.json"
+    },
+    "LCA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LCA/lightgbm_model.onnx",
+      "joblib_path": "country_models/LCA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LCA/feature_columns.json"
+    },
+    "LIE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LIE/lightgbm_model.onnx",
+      "joblib_path": "country_models/LIE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LIE/feature_columns.json"
+    },
+    "LKA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LKA/lightgbm_model.onnx",
+      "joblib_path": "country_models/LKA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LKA/feature_columns.json"
+    },
+    "LSO": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LSO/lightgbm_model.onnx",
+      "joblib_path": "country_models/LSO/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LSO/feature_columns.json"
+    },
+    "LTU": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LTU/lightgbm_model.onnx",
+      "joblib_path": "country_models/LTU/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LTU/feature_columns.json"
+    },
+    "LUX": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LUX/lightgbm_model.onnx",
+      "joblib_path": "country_models/LUX/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LUX/feature_columns.json"
+    },
+    "LVA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/LVA/lightgbm_model.onnx",
+      "joblib_path": "country_models/LVA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/LVA/feature_columns.json"
+    },
+    "MAC": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MAC/lightgbm_model.onnx",
+      "joblib_path": "country_models/MAC/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MAC/feature_columns.json"
+    },
+    "MAF": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MAF/lightgbm_model.onnx",
+      "joblib_path": "country_models/MAF/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MAF/feature_columns.json"
+    },
+    "MAR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MAR/lightgbm_model.onnx",
+      "joblib_path": "country_models/MAR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MAR/feature_columns.json"
+    },
+    "MCO": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MCO/lightgbm_model.onnx",
+      "joblib_path": "country_models/MCO/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MCO/feature_columns.json"
+    },
+    "MDA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MDA/lightgbm_model.onnx",
+      "joblib_path": "country_models/MDA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MDA/feature_columns.json"
+    },
+    "MDG": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MDG/lightgbm_model.onnx",
+      "joblib_path": "country_models/MDG/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MDG/feature_columns.json"
+    },
+    "MDV": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MDV/lightgbm_model.onnx",
+      "joblib_path": "country_models/MDV/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MDV/feature_columns.json"
+    },
+    "MEX": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MEX/lightgbm_model.onnx",
+      "joblib_path": "country_models/MEX/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MEX/feature_columns.json"
+    },
+    "MHL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MHL/lightgbm_model.onnx",
+      "joblib_path": "country_models/MHL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MHL/feature_columns.json"
+    },
+    "MKD": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MKD/lightgbm_model.onnx",
+      "joblib_path": "country_models/MKD/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MKD/feature_columns.json"
+    },
+    "MLI": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MLI/lightgbm_model.onnx",
+      "joblib_path": "country_models/MLI/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MLI/feature_columns.json"
+    },
+    "MLT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MLT/lightgbm_model.onnx",
+      "joblib_path": "country_models/MLT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MLT/feature_columns.json"
+    },
+    "MMR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MMR/lightgbm_model.onnx",
+      "joblib_path": "country_models/MMR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MMR/feature_columns.json"
+    },
+    "MNE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MNE/lightgbm_model.onnx",
+      "joblib_path": "country_models/MNE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MNE/feature_columns.json"
+    },
+    "MNG": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MNG/lightgbm_model.onnx",
+      "joblib_path": "country_models/MNG/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MNG/feature_columns.json"
+    },
+    "MNP": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MNP/lightgbm_model.onnx",
+      "joblib_path": "country_models/MNP/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MNP/feature_columns.json"
+    },
+    "MOZ": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MOZ/lightgbm_model.onnx",
+      "joblib_path": "country_models/MOZ/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MOZ/feature_columns.json"
+    },
+    "MRT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MRT/lightgbm_model.onnx",
+      "joblib_path": "country_models/MRT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MRT/feature_columns.json"
+    },
+    "MSR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MSR/lightgbm_model.onnx",
+      "joblib_path": "country_models/MSR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MSR/feature_columns.json"
+    },
+    "MTQ": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MTQ/lightgbm_model.onnx",
+      "joblib_path": "country_models/MTQ/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MTQ/feature_columns.json"
+    },
+    "MUS": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MUS/lightgbm_model.onnx",
+      "joblib_path": "country_models/MUS/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MUS/feature_columns.json"
+    },
+    "MWI": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MWI/lightgbm_model.onnx",
+      "joblib_path": "country_models/MWI/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MWI/feature_columns.json"
+    },
+    "MYS": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MYS/lightgbm_model.onnx",
+      "joblib_path": "country_models/MYS/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MYS/feature_columns.json"
+    },
+    "MYT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/MYT/lightgbm_model.onnx",
+      "joblib_path": "country_models/MYT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/MYT/feature_columns.json"
+    },
+    "NAM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NAM/lightgbm_model.onnx",
+      "joblib_path": "country_models/NAM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NAM/feature_columns.json"
+    },
+    "NAN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NAN/lightgbm_model.onnx",
+      "joblib_path": "country_models/NAN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NAN/feature_columns.json"
+    },
+    "NCL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NCL/lightgbm_model.onnx",
+      "joblib_path": "country_models/NCL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NCL/feature_columns.json"
+    },
+    "NER": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NER/lightgbm_model.onnx",
+      "joblib_path": "country_models/NER/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NER/feature_columns.json"
+    },
+    "NGA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NGA/lightgbm_model.onnx",
+      "joblib_path": "country_models/NGA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NGA/feature_columns.json"
+    },
+    "NIC": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NIC/lightgbm_model.onnx",
+      "joblib_path": "country_models/NIC/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NIC/feature_columns.json"
+    },
+    "NIU": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NIU/lightgbm_model.onnx",
+      "joblib_path": "country_models/NIU/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NIU/feature_columns.json"
+    },
+    "NLD": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NLD/lightgbm_model.onnx",
+      "joblib_path": "country_models/NLD/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NLD/feature_columns.json"
+    },
+    "NOR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NOR/lightgbm_model.onnx",
+      "joblib_path": "country_models/NOR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NOR/feature_columns.json"
+    },
+    "NPL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NPL/lightgbm_model.onnx",
+      "joblib_path": "country_models/NPL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NPL/feature_columns.json"
+    },
+    "NRU": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NRU/lightgbm_model.onnx",
+      "joblib_path": "country_models/NRU/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NRU/feature_columns.json"
+    },
+    "NZL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/NZL/lightgbm_model.onnx",
+      "joblib_path": "country_models/NZL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/NZL/feature_columns.json"
+    },
+    "OMN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/OMN/lightgbm_model.onnx",
+      "joblib_path": "country_models/OMN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/OMN/feature_columns.json"
+    },
+    "PAK": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PAK/lightgbm_model.onnx",
+      "joblib_path": "country_models/PAK/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PAK/feature_columns.json"
+    },
+    "PAN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PAN/lightgbm_model.onnx",
+      "joblib_path": "country_models/PAN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PAN/feature_columns.json"
+    },
+    "PCN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PCN/lightgbm_model.onnx",
+      "joblib_path": "country_models/PCN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PCN/feature_columns.json"
+    },
+    "PER": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PER/lightgbm_model.onnx",
+      "joblib_path": "country_models/PER/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PER/feature_columns.json"
+    },
+    "PHL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PHL/lightgbm_model.onnx",
+      "joblib_path": "country_models/PHL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PHL/feature_columns.json"
+    },
+    "PLW": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PLW/lightgbm_model.onnx",
+      "joblib_path": "country_models/PLW/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PLW/feature_columns.json"
+    },
+    "PNG": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PNG/lightgbm_model.onnx",
+      "joblib_path": "country_models/PNG/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PNG/feature_columns.json"
+    },
+    "POL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/POL/lightgbm_model.onnx",
+      "joblib_path": "country_models/POL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/POL/feature_columns.json"
+    },
+    "PRI": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PRI/lightgbm_model.onnx",
+      "joblib_path": "country_models/PRI/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PRI/feature_columns.json"
+    },
+    "PRK": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PRK/lightgbm_model.onnx",
+      "joblib_path": "country_models/PRK/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PRK/feature_columns.json"
+    },
+    "PRT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PRT/lightgbm_model.onnx",
+      "joblib_path": "country_models/PRT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PRT/feature_columns.json"
+    },
+    "PRY": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PRY/lightgbm_model.onnx",
+      "joblib_path": "country_models/PRY/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PRY/feature_columns.json"
+    },
+    "PSE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PSE/lightgbm_model.onnx",
+      "joblib_path": "country_models/PSE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PSE/feature_columns.json"
+    },
+    "PYF": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/PYF/lightgbm_model.onnx",
+      "joblib_path": "country_models/PYF/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/PYF/feature_columns.json"
+    },
+    "QAT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/QAT/lightgbm_model.onnx",
+      "joblib_path": "country_models/QAT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/QAT/feature_columns.json"
+    },
+    "REU": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/REU/lightgbm_model.onnx",
+      "joblib_path": "country_models/REU/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/REU/feature_columns.json"
+    },
+    "ROU": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ROU/lightgbm_model.onnx",
+      "joblib_path": "country_models/ROU/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ROU/feature_columns.json"
+    },
+    "RUS": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/RUS/lightgbm_model.onnx",
+      "joblib_path": "country_models/RUS/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/RUS/feature_columns.json"
+    },
+    "RWA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/RWA/lightgbm_model.onnx",
+      "joblib_path": "country_models/RWA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/RWA/feature_columns.json"
+    },
+    "SAU": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SAU/lightgbm_model.onnx",
+      "joblib_path": "country_models/SAU/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SAU/feature_columns.json"
+    },
+    "SDN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SDN/lightgbm_model.onnx",
+      "joblib_path": "country_models/SDN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SDN/feature_columns.json"
+    },
+    "SEN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SEN/lightgbm_model.onnx",
+      "joblib_path": "country_models/SEN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SEN/feature_columns.json"
+    },
+    "SGP": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SGP/lightgbm_model.onnx",
+      "joblib_path": "country_models/SGP/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SGP/feature_columns.json"
+    },
+    "SHN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SHN/lightgbm_model.onnx",
+      "joblib_path": "country_models/SHN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SHN/feature_columns.json"
+    },
+    "SLB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SLB/lightgbm_model.onnx",
+      "joblib_path": "country_models/SLB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SLB/feature_columns.json"
+    },
+    "SLE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SLE/lightgbm_model.onnx",
+      "joblib_path": "country_models/SLE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SLE/feature_columns.json"
+    },
+    "SLV": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SLV/lightgbm_model.onnx",
+      "joblib_path": "country_models/SLV/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SLV/feature_columns.json"
+    },
+    "SMR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SMR/lightgbm_model.onnx",
+      "joblib_path": "country_models/SMR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SMR/feature_columns.json"
+    },
+    "SOM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SOM/lightgbm_model.onnx",
+      "joblib_path": "country_models/SOM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SOM/feature_columns.json"
+    },
+    "SPM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SPM/lightgbm_model.onnx",
+      "joblib_path": "country_models/SPM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SPM/feature_columns.json"
+    },
+    "SRB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SRB/lightgbm_model.onnx",
+      "joblib_path": "country_models/SRB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SRB/feature_columns.json"
+    },
+    "SSD": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SSD/lightgbm_model.onnx",
+      "joblib_path": "country_models/SSD/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SSD/feature_columns.json"
+    },
+    "STP": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/STP/lightgbm_model.onnx",
+      "joblib_path": "country_models/STP/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/STP/feature_columns.json"
+    },
+    "SUR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SUR/lightgbm_model.onnx",
+      "joblib_path": "country_models/SUR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SUR/feature_columns.json"
+    },
+    "SVK": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SVK/lightgbm_model.onnx",
+      "joblib_path": "country_models/SVK/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SVK/feature_columns.json"
+    },
+    "SVN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SVN/lightgbm_model.onnx",
+      "joblib_path": "country_models/SVN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SVN/feature_columns.json"
+    },
+    "SWE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SWE/lightgbm_model.onnx",
+      "joblib_path": "country_models/SWE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SWE/feature_columns.json"
+    },
+    "SWZ": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SWZ/lightgbm_model.onnx",
+      "joblib_path": "country_models/SWZ/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SWZ/feature_columns.json"
+    },
+    "SXM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SXM/lightgbm_model.onnx",
+      "joblib_path": "country_models/SXM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SXM/feature_columns.json"
+    },
+    "SYC": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SYC/lightgbm_model.onnx",
+      "joblib_path": "country_models/SYC/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SYC/feature_columns.json"
+    },
+    "SYR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/SYR/lightgbm_model.onnx",
+      "joblib_path": "country_models/SYR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/SYR/feature_columns.json"
+    },
+    "TCA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TCA/lightgbm_model.onnx",
+      "joblib_path": "country_models/TCA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TCA/feature_columns.json"
+    },
+    "TCD": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TCD/lightgbm_model.onnx",
+      "joblib_path": "country_models/TCD/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TCD/feature_columns.json"
+    },
+    "TGO": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TGO/lightgbm_model.onnx",
+      "joblib_path": "country_models/TGO/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TGO/feature_columns.json"
+    },
+    "THA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/THA/lightgbm_model.onnx",
+      "joblib_path": "country_models/THA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/THA/feature_columns.json"
+    },
+    "TJK": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TJK/lightgbm_model.onnx",
+      "joblib_path": "country_models/TJK/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TJK/feature_columns.json"
+    },
+    "TKL": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TKL/lightgbm_model.onnx",
+      "joblib_path": "country_models/TKL/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TKL/feature_columns.json"
+    },
+    "TKM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TKM/lightgbm_model.onnx",
+      "joblib_path": "country_models/TKM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TKM/feature_columns.json"
+    },
+    "TLS": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TLS/lightgbm_model.onnx",
+      "joblib_path": "country_models/TLS/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TLS/feature_columns.json"
+    },
+    "TON": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TON/lightgbm_model.onnx",
+      "joblib_path": "country_models/TON/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TON/feature_columns.json"
+    },
+    "TTO": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TTO/lightgbm_model.onnx",
+      "joblib_path": "country_models/TTO/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TTO/feature_columns.json"
+    },
+    "TUN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TUN/lightgbm_model.onnx",
+      "joblib_path": "country_models/TUN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TUN/feature_columns.json"
+    },
+    "TUR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TUR/lightgbm_model.onnx",
+      "joblib_path": "country_models/TUR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TUR/feature_columns.json"
+    },
+    "TUV": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TUV/lightgbm_model.onnx",
+      "joblib_path": "country_models/TUV/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TUV/feature_columns.json"
+    },
+    "TWN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TWN/lightgbm_model.onnx",
+      "joblib_path": "country_models/TWN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TWN/feature_columns.json"
+    },
+    "TZA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/TZA/lightgbm_model.onnx",
+      "joblib_path": "country_models/TZA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/TZA/feature_columns.json"
+    },
+    "UGA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/UGA/lightgbm_model.onnx",
+      "joblib_path": "country_models/UGA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/UGA/feature_columns.json"
+    },
+    "UKR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/UKR/lightgbm_model.onnx",
+      "joblib_path": "country_models/UKR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/UKR/feature_columns.json"
+    },
+    "URY": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/URY/lightgbm_model.onnx",
+      "joblib_path": "country_models/URY/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/URY/feature_columns.json"
+    },
+    "USA": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/USA/lightgbm_model.onnx",
+      "joblib_path": "country_models/USA/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/USA/feature_columns.json"
+    },
+    "UZB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/UZB/lightgbm_model.onnx",
+      "joblib_path": "country_models/UZB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/UZB/feature_columns.json"
+    },
+    "VAT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/VAT/lightgbm_model.onnx",
+      "joblib_path": "country_models/VAT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/VAT/feature_columns.json"
+    },
+    "VCT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/VCT/lightgbm_model.onnx",
+      "joblib_path": "country_models/VCT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/VCT/feature_columns.json"
+    },
+    "VEN": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/VEN/lightgbm_model.onnx",
+      "joblib_path": "country_models/VEN/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/VEN/feature_columns.json"
+    },
+    "VGB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/VGB/lightgbm_model.onnx",
+      "joblib_path": "country_models/VGB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/VGB/feature_columns.json"
+    },
+    "VIR": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/VIR/lightgbm_model.onnx",
+      "joblib_path": "country_models/VIR/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/VIR/feature_columns.json"
+    },
+    "VNM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/VNM/lightgbm_model.onnx",
+      "joblib_path": "country_models/VNM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/VNM/feature_columns.json"
+    },
+    "VUT": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/VUT/lightgbm_model.onnx",
+      "joblib_path": "country_models/VUT/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/VUT/feature_columns.json"
+    },
+    "WLF": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/WLF/lightgbm_model.onnx",
+      "joblib_path": "country_models/WLF/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/WLF/feature_columns.json"
+    },
+    "WSM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/WSM/lightgbm_model.onnx",
+      "joblib_path": "country_models/WSM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/WSM/feature_columns.json"
+    },
+    "YEM": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/YEM/lightgbm_model.onnx",
+      "joblib_path": "country_models/YEM/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/YEM/feature_columns.json"
+    },
+    "ZAF": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ZAF/lightgbm_model.onnx",
+      "joblib_path": "country_models/ZAF/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ZAF/feature_columns.json"
+    },
+    "ZMB": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ZMB/lightgbm_model.onnx",
+      "joblib_path": "country_models/ZMB/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ZMB/feature_columns.json"
+    },
+    "ZWE": {
+      "strategy": "country_model",
+      "reason": "trained",
+      "onnx_path": "country_models/ZWE/lightgbm_model.onnx",
+      "joblib_path": "country_models/ZWE/lightgbm_model.joblib",
+      "feature_columns_path": "country_models/ZWE/feature_columns.json"
+    }
+  }
+}

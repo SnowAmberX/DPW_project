@@ -169,6 +169,5 @@ dump
 
 *.docx
 *.joblib
-*.json
 
 .claude/

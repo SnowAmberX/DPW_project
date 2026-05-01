@@ -1,0 +1,10 @@
+{
+  "split_mode": "data_split",
+  "train_rows": 371182,
+  "val_rows": 78631,
+  "test_rows": 78288,
+  "num_features": 258,
+  "test_r2": 0.05991371426823244,
+  "test_rmse": 937.8798753465641,
+  "test_smape": 197.3302523902244
+}

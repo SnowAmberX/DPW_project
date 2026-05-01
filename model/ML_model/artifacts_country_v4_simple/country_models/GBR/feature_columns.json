@@ -1,0 +1,23 @@
+[
+  "new_cases_lag_1",
+  "new_cases_lag_3",
+  "new_cases_lag_7",
+  "new_cases_lag_14",
+  "new_cases_roll_mean_7",
+  "new_cases_roll_mean_14",
+  "new_cases_growth_1d",
+  "new_cases_growth_7d",
+  "new_deaths_lag_1",
+  "new_deaths_lag_7",
+  "stringency_index",
+  "reproduction_rate",
+  "positive_rate",
+  "region_peer_new_cases_roll7_mean",
+  "neighbor_weighted_new_cases_mean",
+  "neighbor_weighted_stringency_mean",
+  "neighbor_count",
+  "population",
+  "population_density",
+  "day_of_week",
+  "month"
+]

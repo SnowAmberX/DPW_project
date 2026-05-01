@@ -1,0 +1,5 @@
+{
+  "target": "smoothed_next_day_new_cases",
+  "postprocess": "clip_to_non_negative",
+  "note": "features include regional and neighbor weighted signals"
+}

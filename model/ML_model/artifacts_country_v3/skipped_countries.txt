@@ -1,4 +1,0 @@
-CIV: insufficient_split_rows(train=1145,val=0,test=0)
-HKG: insufficient_split_rows(train=1571,val=100,test=0)
-MAC: insufficient_split_rows(train=1207,val=0,test=0)
-TWN: insufficient_split_rows(train=1375,val=10,test=0)
