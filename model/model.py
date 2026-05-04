@@ -67,7 +67,7 @@ class EpidemicTCN(nn.Module):
         num_dynamic_features: int,
         num_static_features: int,
         history_days: int = 14,
-        forecast_days: int = 30,
+        forecast_days: int = 80,
         hidden_size: int = 128,
         num_levels: int = 3,
         kernel_size: int = 3,

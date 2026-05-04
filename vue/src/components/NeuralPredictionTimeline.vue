@@ -10,7 +10,7 @@ const CLIP_QUANTILE = 0.995;
 const MODEL_OPTIONS = [
   {
     id: "neural",
-    label: "Neural (GNN-RNN)",
+    label: "Neural (TCN)",
     endpoint: "/api/v1/infections/neural-prediction"
   },
   {

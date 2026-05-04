@@ -31,7 +31,7 @@ CSV_PATH = Path("data/raw_data/compact.csv")
 WEIGHTS_DIR = Path("backend/weights")
 
 HISTORY_DAYS = 14
-FORECAST_DAYS = 30
+FORECAST_DAYS = 80
 BATCH_SIZE = 32
 EPOCHS = 200
 LEARNING_RATE = 1e-3

@@ -4229,5 +4229,5 @@
     "hospital_beds_per_thousand"
   ],
   "history_days": 14,
-  "forecast_days": 30
+  "forecast_days": 80
 }
