@@ -1,256 +1,256 @@
+"""Real TCN neural prediction service.
+
+Replaces the deleted mock service. Loads the trained EpidemicTCN model and
+preprocessing state, then runs inference given a seed (origin) country.
+"""
+
 from __future__ import annotations
 
-import importlib
+import json
 import sys
-from datetime import date
+from datetime import datetime, timedelta
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+import pandas as pd
+
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-NEURAL_DIR = PROJECT_ROOT / "model" / "neural"
-ARTIFACTS_DIR = NEURAL_DIR / "artifacts"
-CHECKPOINT_CANDIDATES = (
-    ARTIFACTS_DIR / "checkpoint_gnn_rnn.pt",
-)
+WEIGHTS_DIR = PROJECT_ROOT / "backend" / "weights"
+MODEL_PATH = WEIGHTS_DIR / "tcn_model.pt"
+STATE_PATH = WEIGHTS_DIR / "preprocess_state.json"
+CSV_PATH = PROJECT_ROOT / "data" / "raw_data" / "compact.csv"
 
 
-def _resolve_checkpoint_path() -> Path:
-    for candidate in CHECKPOINT_CANDIDATES:
-        if candidate.exists():
-            return candidate
+def _resolve_seed_country(seed_country: str, country_list: list[str], country_codes: list[str]) -> tuple[int, str, str]:
+    """Resolve seed_country to (index, name, iso3_code)."""
+    seed = str(seed_country).strip()
 
-    searched = ", ".join(str(path) for path in CHECKPOINT_CANDIDATES)
-    raise FileNotFoundError(f"No neural checkpoint found. Checked: {searched}")
+    # Try exact match (name or code)
+    for i, name in enumerate(country_list):
+        if name.lower() == seed.lower() or country_codes[i].lower() == seed.lower():
+            return i, name, country_codes[i]
 
+    # Try partial match
+    for i, name in enumerate(country_list):
+        if seed.lower() in name.lower():
+            return i, name, country_codes[i]
 
-def _load_neural_dependencies() -> tuple[Any, Any, Any, Any]:
-    try:
-        import numpy as np
-        import pandas as pd
-        import torch
-    except ImportError as exc:
-        raise RuntimeError(
-            "Neural prediction dependencies are missing. Install with: "
-            "uv pip install -r model/neural/requirements.txt"
-        ) from exc
-
-    if str(NEURAL_DIR) not in sys.path:
-        sys.path.insert(0, str(NEURAL_DIR))
-
-    try:
-        gnn_module = importlib.import_module("gnn_lstm")
-        model_cls = getattr(gnn_module, "GNNRNNForecastModel")
-    except Exception as exc:  # noqa: BLE001 - provide a clearer runtime message for API consumers.
-        raise RuntimeError(
-            "Failed to import neural model class. Ensure torch-geometric is installed "
-            "for the current Python environment."
-        ) from exc
- 
-    return np, pd, torch, model_cls
-
-
-def _resolve_seed_country(seed_country: str, countries: list[str], name_to_code: dict[str, str]) -> str:
-    key = seed_country.strip()
-    if not key:
-        raise ValueError("seed_country cannot be empty.")
-
-    key_upper = key.upper()
-    if key_upper in countries:
-        return key_upper
-
-    key_lower = key.lower()
-    if key_lower in name_to_code:
-        code = str(name_to_code[key_lower]).upper()
-        if code in countries:
-            return code
-
-    raise ValueError(f"Unknown seed_country '{seed_country}'. Please use a valid ISO-3 code or country name.")
-
-
-def _build_smooth_baseline(
-    np_module: Any,
-    num_nodes: int,
-    seq_len: int,
-    baseline_min: float,
-    baseline_max: float,
-    random_seed: int,
-) -> Any:
-    low = max(0.0, float(min(baseline_min, baseline_max)))
-    high = max(low, float(max(baseline_min, baseline_max)))
-
-    if high <= 0.0:
-        return np_module.zeros((num_nodes, seq_len), dtype=np_module.float32)
-
-    rng = np_module.random.default_rng(seed=random_seed)
-    starts = rng.uniform(low, high, size=(num_nodes, 1)).astype(np_module.float32)
-    ends = rng.uniform(low, high, size=(num_nodes, 1)).astype(np_module.float32)
-    alpha = np_module.linspace(0.0, 1.0, seq_len, dtype=np_module.float32)[None, :]
-    baseline_cases = starts * (1.0 - alpha) + ends * alpha
-    return np_module.log1p(baseline_cases).astype(np_module.float32)
-
-
-def _build_seed_curve(np_module: Any, seq_len: int, amplitude: float, growth_rate: float) -> Any:
-    amp = max(1e-6, float(amplitude))
-    rate = float(growth_rate)
-    t = np_module.arange(seq_len, dtype=np_module.float32)
-    exp_term = np_module.exp(np_module.clip(rate * t, a_min=-20.0, a_max=20.0))
-    curve = np_module.log1p(amp * exp_term)
-    return curve.astype(np_module.float32)
-
-
-def _resolve_start_date(start_date: str | None, pd_module: Any) -> Any:
-    if not start_date:
-        return pd_module.Timestamp(date.today())
-
-    timestamp = pd_module.to_datetime(start_date, errors="coerce")
-    if pd_module.isna(timestamp):
-        raise ValueError(f"Invalid start_date: {start_date}. Expected YYYY-MM-DD.")
-    return pd_module.Timestamp(timestamp)
+    raise ValueError(
+        f"Country '{seed_country}' not found. Available: {', '.join(country_list[:20])}..."
+    )
 
 
 @lru_cache(maxsize=1)
-def _load_predictor() -> dict[str, Any]:
-    np_module, pd_module, torch_module, model_cls = _load_neural_dependencies()
-    checkpoint_path = _resolve_checkpoint_path()
+def _load_preprocess_state() -> dict:
+    if not STATE_PATH.exists():
+        raise FileNotFoundError(
+            f"Preprocess state not found at {STATE_PATH}. Run 'python model/train.py' first."
+        )
+    with open(STATE_PATH, "r") as f:
+        return json.load(f)
 
-    payload = torch_module.load(checkpoint_path, map_location="cpu", weights_only=False)
-    cfg = payload["config"]
-    artifacts = payload["artifacts"]
 
-    countries = list(artifacts["countries"])
-    name_to_code = dict(artifacts.get("name_to_code", {}))
-    code_to_name = dict(artifacts.get("code_to_name", {}))
-
-    static_features = artifacts["static_features"].float()
-    edge_index = artifacts["edge_index"].long()
-    edge_weight = artifacts["edge_weight"].float()
-
-    input_dim = int(cfg["input_dim"])
-    static_dim = int(static_features.shape[1])
-    dynamic_dim = input_dim - static_dim
-    if dynamic_dim not in (1, 2):
-        raise ValueError(
-            f"Unsupported dynamic_dim={dynamic_dim}. Expected 1 (log_cases) or 2 (log_cases + seed_flag)."
+@lru_cache(maxsize=1)
+def _load_model() -> Any:
+    if not MODEL_PATH.exists():
+        raise FileNotFoundError(
+            f"Model checkpoint not found at {MODEL_PATH}. Run 'python model/train.py' first."
         )
 
-    model = model_cls(
-        num_nodes=int(cfg["num_nodes"]),
-        input_dim=input_dim,
-        hidden_dim=int(cfg["hidden_dim"]),
-        horizon=int(cfg["horizon"]),
-        rnn_type=str(cfg["rnn_type"]),
-        rnn_layers=int(cfg["rnn_layers"]),
-        gat_heads=int(cfg.get("gat_heads", 4)),
+    sys.path.insert(0, str(PROJECT_ROOT))
+    import torch
+    from model.model import EpidemicTCN
+
+    checkpoint = torch.load(MODEL_PATH, map_location="cpu", weights_only=False)
+
+    model = EpidemicTCN(
+        num_countries=checkpoint["num_countries"],
+        num_dynamic_features=checkpoint["num_dynamic_features"],
+        num_static_features=checkpoint["num_static_features"],
+        history_days=checkpoint["history_days"],
+        forecast_days=checkpoint["forecast_days"],
+        hidden_size=checkpoint["hidden_size"],
+        num_levels=checkpoint["num_levels"],
+        dropout=checkpoint["dropout"],
     )
-    model.load_state_dict(payload["model_state_dict"])
+    model.load_state_dict(checkpoint["model_state_dict"])
     model.eval()
-
-    return {
-        "np": np_module,
-        "pd": pd_module,
-        "torch": torch_module,
-        "model": model,
-        "countries": countries,
-        "name_to_code": name_to_code,
-        "code_to_name": code_to_name,
-        "static_features": static_features,
-        "edge_index": edge_index,
-        "edge_weight": edge_weight,
-        "seq_len": int(cfg["seq_len"]),
-        "horizon": int(cfg["horizon"]),
-        "input_dim": input_dim,
-        "static_dim": static_dim,
-        "dynamic_dim": dynamic_dim,
-    }
+    return model
 
 
-def build_neural_prediction_timeline(seed_country: str, start_date: str | None = None) -> dict[str, Any]:
-    predictor = _load_predictor()
-    np_module = predictor["np"]
-    pd_module = predictor["pd"]
-    torch_module = predictor["torch"]
+@lru_cache(maxsize=1)
+def _load_recent_data() -> tuple[np.ndarray, np.ndarray, np.ndarray, str]:
+    """Load the most recent history window for all countries from compact.csv.
 
-    countries: list[str] = predictor["countries"]
-    name_to_code: dict[str, str] = predictor["name_to_code"]
-    code_to_name: dict[str, str] = predictor["code_to_name"]
+    Returns (dyn_array, static_array_norm, target_log, latest_date_str).
+    """
+    state = _load_preprocess_state()
+    country_list = state["country_list"]
+    dyn_features = state["dynamic_features"]
+    static_features = state["static_features"]
 
-    seed_code = _resolve_seed_country(seed_country=seed_country, countries=countries, name_to_code=name_to_code)
-    seed_idx = int(countries.index(seed_code))
+    df = pd.read_csv(CSV_PATH, parse_dates=["date"])
+    df = df[df["code"].notna() & df["code"].str.match(r"^[A-Z]{3}$")]
+    df = df[df["country"].isin(country_list)]
 
-    seq_len = int(predictor["seq_len"])
-    horizon = int(predictor["horizon"])
-    num_nodes = len(countries)
+    all_dates = sorted(df["date"].unique())
+    history_days = state["history_days"]
 
-    static_features = predictor["static_features"]
-    edge_index = predictor["edge_index"]
-    edge_weight = predictor["edge_weight"]
-    input_dim = int(predictor["input_dim"])
-    static_dim = int(predictor["static_dim"])
-    dynamic_dim = int(predictor["dynamic_dim"])
+    # Build dynamic array for all dates
+    date_index = {d: i for i, d in enumerate(all_dates)}
+    num_countries = len(country_list)
+    num_dates = len(all_dates)
 
-    log_history = _build_smooth_baseline(
-        np_module=np_module,
-        num_nodes=num_nodes,
-        seq_len=seq_len,
-        baseline_min=0.0,
-        baseline_max=3.0,
-        random_seed=42,
-    )
-    log_history[seed_idx] = _build_seed_curve(
-        np_module=np_module,
-        seq_len=seq_len,
-        amplitude=12.0,
-        growth_rate=0.22,
-    )
+    dyn_array = np.full((num_countries, num_dates, len(dyn_features)), np.nan, dtype=np.float32)
 
-    x = torch_module.zeros((1, num_nodes, seq_len, input_dim), dtype=torch_module.float32)
-    x[0, :, :, 0] = torch_module.from_numpy(log_history)
-    x[0, :, :, 1 : 1 + static_dim] = static_features[:, None, :]
+    for ci, country in enumerate(country_list):
+        cdf = df[df["country"] == country].sort_values("date")
+        for _, row in cdf.iterrows():
+            di = date_index[row["date"]]
+            for fi, feat in enumerate(dyn_features):
+                val = row.get(feat)
+                if pd.notna(val) and np.isfinite(val):
+                    dyn_array[ci, di, fi] = float(val)
 
-    if dynamic_dim == 2:
-        seed_flag = torch_module.zeros((num_nodes,), dtype=torch_module.float32)
-        seed_flag[seed_idx] = 1.0
-        x[0, :, :, -1] = seed_flag[:, None]
+    # Forward-fill and zero-fill
+    for ci in range(num_countries):
+        for fi in range(len(dyn_features)):
+            col = dyn_array[ci, :, fi]
+            mask = ~np.isnan(col)
+            if mask.any():
+                idx = np.where(mask)[0]
+                values = col[mask]
+                col[: idx[-1] + 1] = np.interp(np.arange(idx[-1] + 1), idx, values)
+                col[idx[-1] + 1:] = values[-1]
+            else:
+                col[:] = 0.0
+            col[np.isnan(col)] = 0.0
 
-    model = predictor["model"]
-    with torch_module.no_grad():
-        predicted_log = model(x, edge_index, edge_weight)[0].cpu().numpy()
+    # Load static features and normalize
+    static_df = df.groupby("country")[static_features].first()
+    static_df = static_df.fillna(static_df.median())
+    static_array = static_df.reindex(country_list).values.astype(np.float32)
 
-    predicted_log = np_module.clip(predicted_log, a_min=-20.0, a_max=20.0)
-    predicted_cases = np_module.expm1(predicted_log)
-    predicted_cases = np_module.clip(predicted_cases, a_min=0.0, a_max=None)
+    static_mean = np.array(state["static_mean"], dtype=np.float32)
+    static_std = np.array(state["static_std"], dtype=np.float32)
+    static_array_norm = (static_array - static_mean) / static_std
 
-    forecast_start = _resolve_start_date(start_date=start_date, pd_module=pd_module)
-    max_new_cases = float(np_module.max(predicted_cases)) if predicted_cases.size else 0.0
+    # Normalize dynamic features
+    dyn_mean = np.array(state["dyn_mean"], dtype=np.float32)
+    dyn_std = np.array(state["dyn_std"], dtype=np.float32)
+    dyn_array_norm = (dyn_array - dyn_mean) / dyn_std
 
-    frames: list[dict[str, Any]] = []
-    for day_index in range(horizon):
-        frame_date = (forecast_start + pd_module.Timedelta(days=day_index)).date().isoformat()
-        values: dict[str, float] = {}
+    # Extract the last history_days window
+    last_date = all_dates[-1]
+    last_idx = len(all_dates) - 1
+    start_idx = max(0, last_idx - history_days)
 
-        for country_index, code in enumerate(countries):
-            country_name = code_to_name.get(code, code)
-            values[country_name] = float(predicted_cases[country_index, day_index])
+    recent_dyn = dyn_array_norm[:, start_idx:last_idx, :]
+    # Pad if needed
+    if recent_dyn.shape[1] < history_days:
+        pad = history_days - recent_dyn.shape[1]
+        recent_dyn = np.pad(recent_dyn, ((0, 0), (pad, 0), (0, 0)), mode="edge")
 
-        frames.append(
-            {
-                "day": day_index + 1,
-                "date": frame_date,
-                "new_cases_by_country": values,
-            }
+    # Target log for denormalization
+    target = np.log1p(np.maximum(dyn_array[:, :, 0], 0))
+
+    return recent_dyn, static_array_norm, target, str(last_date.date())
+
+
+def build_neural_prediction_timeline(
+    seed_country: str,
+    start_date: str | None = None,
+) -> dict:
+    """Run TCN inference and return structured prediction timeline.
+
+    Args:
+        seed_country: Country name or ISO-3 code of the outbreak origin.
+        start_date: Optional forecast start date (ignored; uses latest data date).
+
+    Returns:
+        dict compatible with NeuralPredictionResponse schema.
+    """
+    try:
+        state = _load_preprocess_state()
+    except FileNotFoundError:
+        raise
+
+    try:
+        model = _load_model()
+    except FileNotFoundError:
+        raise
+
+    import torch
+
+    country_list = state["country_list"]
+    country_codes = state["country_codes"]
+    forecast_days = state["forecast_days"]
+    history_days = state["history_days"]
+
+    # Resolve seed country
+    seed_idx, seed_name, seed_code = _resolve_seed_country(seed_country, country_list, country_codes)
+
+    # Load recent data
+    recent_dyn, static_array_norm, target_log, latest_date_str = _load_recent_data()
+
+    num_countries = len(country_list)
+
+    country_ids = torch.arange(num_countries, dtype=torch.long)
+
+    # Run inference
+    with torch.no_grad():
+        predictions_norm = model.predict(
+            dynamic_features=torch.from_numpy(recent_dyn),
+            static_features=torch.from_numpy(static_array_norm),
+            origin_idx=seed_idx,
+            country_ids=country_ids,
         )
 
-    if not frames:
-        raise ValueError("Model returned no forecast frames.")
+    predictions_norm = predictions_norm.numpy()  # (N, forecast_days)
+
+    # Denormalize predictions (per-country normalization)
+    target_mean = np.array(state["target_mean"], dtype=np.float32)  # (N,)
+    target_std = np.array(state["target_std"], dtype=np.float32)    # (N,)
+    # Inverse of (x - mean) / std -> x * std + mean, then expm1
+    predictions_log = predictions_norm * target_std[:, None] + target_mean[:, None]
+    predictions_cases = np.expm1(predictions_log)
+    predictions_cases = np.maximum(predictions_cases, 0)
+
+    # Build dates
+    base_date = (
+        datetime.strptime(start_date, "%Y-%m-%d")
+        if start_date
+        else datetime.strptime(latest_date_str, "%Y-%m-%d")
+    )
+
+    frames = []
+    max_cases = 0.0
+
+    for day in range(1, forecast_days + 1):
+        frame_date = base_date + timedelta(days=day)
+        new_cases_by_country: dict[str, float] = {}
+
+        for ci, country in enumerate(country_list):
+            val = float(predictions_cases[ci, day - 1])
+            if val > max_cases:
+                max_cases = val
+            new_cases_by_country[country] = val
+
+        frames.append({
+            "day": day,
+            "date": frame_date.strftime("%Y-%m-%d"),
+            "new_cases_by_country": new_cases_by_country,
+        })
 
     return {
         "metric": "predicted_new_cases",
         "seed_country_code": seed_code,
-        "seed_country_name": code_to_name.get(seed_code, seed_code),
+        "seed_country_name": seed_name,
         "frame_count": len(frames),
         "start_date": frames[0]["date"],
         "end_date": frames[-1]["date"],
-        "max_new_cases": max_new_cases,
+        "max_new_cases": max_cases,
         "frames": frames,
     }
