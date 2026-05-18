@@ -159,6 +159,18 @@ def _load_recent_data() -> tuple[np.ndarray, np.ndarray, np.ndarray, str]:
     return recent_dyn, static_array_norm, target, str(last_date.date())
 
 
+def warm_neural_cache() -> None:
+    """Pre-load neural model artifacts into LRU cache at startup.
+
+    Call this once during application startup so that the first prediction
+    request does not pay the cost of loading torch, the checkpoint, and
+    the full CSV / preprocess state.
+    """
+    _load_preprocess_state()
+    _load_model()
+    _load_recent_data()
+
+
 def build_neural_prediction_timeline(
     seed_country: str,
     start_date: str | None = None,

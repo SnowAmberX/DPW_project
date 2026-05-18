@@ -160,6 +160,18 @@ def _select_traditional_onnx_model_spec(bundle: TraditionalOnnxRuntimeBundle, co
     return spec
 
 
+def warm_traditional_onnx_cache() -> None:
+    """Pre-load traditional ONNX artifacts into LRU cache at startup.
+
+    Warms the runtime bundle (model registry + panel data) and the global
+    fallback ONNX session so that the first forecast request is snappy.
+    Failures are logged but not raised — prediction endpoints will report
+    errors at request time if artifacts are genuinely missing.
+    """
+    bundle = load_traditional_onnx_runtime_bundle()
+    _get_traditional_onnx_session(str(bundle.global_fallback_spec.onnx_model_path))
+
+
 def forecast_traditional_onnx_global_infections(
     origin_country: str,
     forecast_days: int,
