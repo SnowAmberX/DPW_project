@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "../pages/home/index.vue";
-import OverviewPage from "../pages/overview/index.vue";
+import OverviewPythonPage from "../pages/overview-python/index.vue";
 import CasesVaccinationPage from "../pages/cases-vaccination/index.vue";
 import MortalityVaccinationPage from "../pages/mortality-vaccination/index.vue";
 import PredictionPage from "../pages/prediction/index.vue";
@@ -10,8 +10,12 @@ const routes = [
   {
     path: "/overview",
     name: "overview",
-    component: OverviewPage,
+    component: OverviewPythonPage,
     meta: { title: "Vaccination Status Overview | Vaccine Impact Lab" }
+  },
+  {
+    path: "/overview-python",
+    redirect: { name: "overview" }
   },
   {
     path: "/cases-vaccination",
