@@ -1,6 +1,6 @@
 # Neural Network Setup Guide
 
-The DPW project includes both **traditional machine learning** (ONNX) and **neural network** (PyTorch GNN+LSTM) prediction models.
+The DPW project includes both **traditional machine learning** (ONNX) and **neural network** (PyTorch TCN) prediction models.
 
 ## The Problem
 
@@ -17,12 +17,12 @@ The one-click start scripts (`start_all.sh`, `start_all.ps1`, `start_all.bat`) n
 
 ### For Automatic Installation (Recommended)
 
-Run the one-click script for your OS:
+Run the one-click start scripts for your OS:
 - **macOS/Linux**: `bash start_all.sh`
 - **Windows (PowerShell)**: `.\start_all.ps1`
 - **Windows (CMD)**: `start_all.bat`
 
-These scripts will now install PyTorch and torch-geometric automatically. The first run may take several minutes.
+These scripts will install all dependencies automatically, including PyTorch. The first run may take several minutes.
 
 ### For Manual Installation
 
@@ -106,5 +106,6 @@ Both should return valid predictions (not 500 errors).
 ## More Information
 
 - **PyTorch Installation**: https://pytorch.org/get-started/locally/
-- **PyTorch Geometric**: https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html
-- **Neural Model Training**: See [model/neural/README.md](model/neural/README.md)
+- **Project Setup**: See [STARTUP_GUIDE.md](STARTUP_GUIDE.md)
+- **Backend API**: See [backend/README.md](backend/README.md)
+- **Model Training**: See [model/ML_script/TRAINING.md](model/ML_script/TRAINING.md)
