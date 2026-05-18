@@ -46,27 +46,7 @@ def _env_flag(name: str, default: bool) -> bool:
     return default
 
 
-EPICURVE_SLOW_GROWTH_FRACTION = 0.12
-EPICURVE_SURGE_FRACTION = 0.38
-EPICURVE_PLATEAU_FRACTION = 0.18
-EPICURVE_SLOW_DECLINE_FRACTION = 0.22
-EPICURVE_DRUG_DROP_FRACTION = 0.10
-
-EPICURVE_BASE_LEVEL = 0.35
-EPICURVE_PEAK_LEVEL = 2.6
-EPICURVE_PLATEAU_LEVEL = 2.2
-EPICURVE_POST_DECLINE_LEVEL = 0.9
-EPICURVE_POST_DRUG_LEVEL = 0.18
-
-EPICURVE_SURGE_OSC_AMPLITUDE = 0.18
-EPICURVE_PLATEAU_OSC_AMPLITUDE = 0.08
-EPICURVE_SURGE_OSC_CYCLES = 5.0
-EPICURVE_PLATEAU_OSC_CYCLES = 4.0
-EPICURVE_MIN_FACTOR = 0.05
-EPICURVE_MAX_FACTOR = 3.6
 ACTIVE_CASES_RECOVERY_DAYS = 21.0
-MAX_DAILY_DEATH_RATIO = 0.015
-DEFAULT_DAILY_DEATH_RATIO = 0.002
 
 
 @lru_cache(maxsize=1)
@@ -123,18 +103,16 @@ def _extract_traditional_onnx_scalar(outputs: list[object]) -> float:
     raise RuntimeError("Traditional ONNX model output does not contain numeric tensor.")
 
 
-def _predict_traditional_onnx_next_day_cases(model_spec: TraditionalOnnxModelSpec, feature_vector: np.ndarray) -> float:
+def _predict_traditional_onnx_next_day_active_change(model_spec: TraditionalOnnxModelSpec, feature_vector: np.ndarray) -> float:
     if feature_vector.ndim != 1:
         raise ValueError("Traditional ONNX feature vector must be 1-D.")
 
     session, input_name = _get_traditional_onnx_session(str(model_spec.onnx_model_path))
     outputs = session.run(None, {input_name: feature_vector.reshape(1, -1).astype(np.float32)})
-    # v4_simple artifacts are trained on a smoothed next-day cases target (not log1p),
-    # so ONNX output should be treated as direct case prediction.
-    prediction_cases = _extract_traditional_onnx_scalar(outputs)
-    if not np.isfinite(prediction_cases):
+    prediction_change = _extract_traditional_onnx_scalar(outputs)
+    if not np.isfinite(prediction_change):
         return 0.0
-    return max(prediction_cases, 0.0)
+    return float(prediction_change)
 
 
 def _estimate_traditional_initial_active_cases(state) -> float:
@@ -144,14 +122,6 @@ def _estimate_traditional_initial_active_cases(state) -> float:
     if not recent_cases:
         return 0.0
     return max(float(sum(recent_cases) - sum(recent_deaths)), 0.0)
-
-
-def _clamp_daily_death_ratio(latest_cases: float, latest_deaths: float) -> float:
-    if latest_cases <= 1e-6:
-        return DEFAULT_DAILY_DEATH_RATIO
-
-    estimated = latest_deaths / latest_cases
-    return float(np.clip(estimated, DEFAULT_DAILY_DEATH_RATIO, MAX_DAILY_DEATH_RATIO))
 
 
 def _resolve_traditional_onnx_origin_country_code(bundle: TraditionalOnnxRuntimeBundle, origin_country: str) -> str:
@@ -188,68 +158,6 @@ def _select_traditional_onnx_model_spec(bundle: TraditionalOnnxRuntimeBundle, co
     if spec is None:
         return bundle.global_fallback_spec
     return spec
-
-
-def _smoothstep(value: float) -> float:
-    bounded = float(np.clip(value, 0.0, 1.0))
-    return bounded * bounded * (3.0 - 2.0 * bounded)
-
-
-def _lerp(start: float, end: float, value: float) -> float:
-    return start + (end - start) * value
-
-
-def _normalize_phase_fractions() -> tuple[float, float, float, float, float]:
-    fractions = [
-        EPICURVE_SLOW_GROWTH_FRACTION,
-        EPICURVE_SURGE_FRACTION,
-        EPICURVE_PLATEAU_FRACTION,
-        EPICURVE_SLOW_DECLINE_FRACTION,
-        EPICURVE_DRUG_DROP_FRACTION,
-    ]
-    total = float(sum(fractions))
-    if total <= 0:
-        return (0.2, 0.3, 0.2, 0.2, 0.1)
-    return tuple(fraction / total for fraction in fractions)
-
-
-def _calculate_epicurve_factor(day_index: int, forecast_days: int) -> float:
-    if forecast_days <= 1:
-        return 1.0
-
-    slow_frac, surge_frac, plateau_frac, decline_frac, drug_frac = _normalize_phase_fractions()
-    slow_end = slow_frac
-    surge_end = slow_end + surge_frac
-    plateau_end = surge_end + plateau_frac
-    decline_end = plateau_end + decline_frac
-
-    t = float(day_index) / float(forecast_days)
-    t = float(np.clip(t, 0.0, 1.0))
-
-    if t <= slow_end:
-        phase = t / max(slow_end, 1e-6)
-        factor = _lerp(EPICURVE_BASE_LEVEL, 1.0, _smoothstep(phase))
-    elif t <= surge_end:
-        phase = (t - slow_end) / max(surge_end - slow_end, 1e-6)
-        ramp = _smoothstep(phase)
-        base = _lerp(1.0, EPICURVE_PEAK_LEVEL, ramp)
-        osc_amp = EPICURVE_SURGE_OSC_AMPLITUDE * (0.35 + 0.65 * ramp)
-        osc = 1.0 + osc_amp * np.sin(2.0 * np.pi * EPICURVE_SURGE_OSC_CYCLES * phase)
-        factor = base * osc
-    elif t <= plateau_end:
-        phase = (t - surge_end) / max(plateau_end - surge_end, 1e-6)
-        osc = 1.0 + EPICURVE_PLATEAU_OSC_AMPLITUDE * np.sin(
-            2.0 * np.pi * EPICURVE_PLATEAU_OSC_CYCLES * phase
-        )
-        factor = EPICURVE_PLATEAU_LEVEL * osc
-    elif t <= decline_end:
-        phase = (t - plateau_end) / max(decline_end - plateau_end, 1e-6)
-        factor = _lerp(EPICURVE_PLATEAU_LEVEL, EPICURVE_POST_DECLINE_LEVEL, _smoothstep(phase))
-    else:
-        phase = (t - decline_end) / max(1.0 - decline_end, 1e-6)
-        factor = _lerp(EPICURVE_POST_DECLINE_LEVEL, EPICURVE_POST_DRUG_LEVEL, _smoothstep(phase))
-
-    return float(np.clip(factor, EPICURVE_MIN_FACTOR, EPICURVE_MAX_FACTOR))
 
 
 def forecast_traditional_onnx_global_infections(
@@ -289,7 +197,7 @@ def forecast_traditional_onnx_global_infections(
         forecast_date = simulation_start_date + timedelta(days=day_index)
         dynamic_context = build_traditional_onnx_dynamic_feature_context(states_by_code)
 
-        predicted_cases_by_code: dict[str, float] = {}
+        predicted_active_change_by_code: dict[str, float] = {}
 
         def _predict_one_country(item: tuple[str, object]) -> tuple[str, float]:
             code, state = item
@@ -305,31 +213,24 @@ def forecast_traditional_onnx_global_infections(
                 feature_date=forecast_date,
                 dynamic_context=dynamic_context,
             )
-            prediction_cases = _predict_traditional_onnx_next_day_cases(model_spec, feature_vector)
-            prediction_cases *= _calculate_epicurve_factor(day_index, forecast_days)
-            return code, prediction_cases
+            prediction_change = _predict_traditional_onnx_next_day_active_change(model_spec, feature_vector)
+            return code, prediction_change
 
-        for code, prediction_cases in prediction_pool.map(_predict_one_country, states_by_code.items()):
-            predicted_cases_by_code[code] = prediction_cases
+        for code, prediction_change in prediction_pool.map(_predict_one_country, states_by_code.items()):
+            predicted_active_change_by_code[code] = prediction_change
 
-        for code, predicted_cases in predicted_cases_by_code.items():
+        for code, predicted_change in predicted_active_change_by_code.items():
             state = states_by_code[code]
             latest_cases = float(state.new_cases_history[-1]) if state.new_cases_history else 0.0
-            latest_deaths = float(state.new_deaths_history[-1]) if state.new_deaths_history else 0.0
             active_cases = float(active_cases_by_code.get(code, 0.0))
 
-            death_ratio = _clamp_daily_death_ratio(latest_cases, latest_deaths)
-            predicted_deaths = max(active_cases * death_ratio, 0.0)
-            predicted_deaths = min(predicted_deaths, active_cases)
-
-            predicted_treated = max(active_cases / ACTIVE_CASES_RECOVERY_DAYS, 0.0)
-            predicted_treated = min(predicted_treated, max(active_cases - predicted_deaths, 0.0))
-
-            next_active_cases = max(active_cases + predicted_cases - predicted_deaths - predicted_treated, 0.0)
+            next_active_cases = max(active_cases + predicted_change, 0.0)
             active_cases_by_code[code] = next_active_cases
 
-            state.new_cases_history.append(predicted_cases)
-            state.new_deaths_history.append(predicted_deaths)
+            # Keep recursive features moving without introducing transmission simulation.
+            pseudo_new_cases = max(latest_cases + predicted_change, 0.0)
+            state.new_cases_history.append(pseudo_new_cases)
+            state.new_deaths_history.append(0.0)
 
         if day_index % step_days != 0 and day_index != forecast_days:
             continue

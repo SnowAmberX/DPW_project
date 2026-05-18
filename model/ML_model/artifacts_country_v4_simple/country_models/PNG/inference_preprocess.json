@@ -1,5 +1,5 @@
 {
-  "target": "smoothed_next_day_new_cases",
-  "postprocess": "clip_to_non_negative",
+  "target": "smoothed_next_day_active_change",
+  "postprocess": "identity",
   "note": "features include regional and neighbor weighted signals"
 }

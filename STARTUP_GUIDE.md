@@ -67,8 +67,8 @@ Open the frontend URL shown in terminal (default is `http://127.0.0.1:5173`).
 1. Keep backend running on port 8000.
 2. Open the Vue page.
 3. Ensure Backend URL is `http://127.0.0.1:8000`.
-4. Click "重新加载" to fetch timeline data.
-5. Click "播放" to animate infection spread by date.
+4. Click "Reload" to fetch timeline data.
+5. Click "Play" to animate infection spread by date.
 
 Backend timeline endpoint used by frontend:
 
