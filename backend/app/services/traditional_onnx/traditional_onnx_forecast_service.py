@@ -148,10 +148,10 @@ def _calculate_traditional_delay_days(origin_first_case, country_first_case) -> 
     return max(delta, 0)
 
 
-def _select_traditional_onnx_model_spec(bundle: TraditionalOnnxRuntimeBundle, code: str) -> TraditionalOnnxModelSpec:
-    # Fast mode for interactive UX: avoid loading/running 200+ country-specific ONNX sessions
-    # on every request. Set TRADITIONAL_ONNX_USE_GLOBAL_FALLBACK_ONLY=0 to restore per-country models.
-    if _env_flag("TRADITIONAL_ONNX_USE_GLOBAL_FALLBACK_ONLY", True):
+def _select_traditional_onnx_model_spec(bundle: TraditionalOnnxRuntimeBundle, code: str, use_global_fallback_only: bool) -> TraditionalOnnxModelSpec:
+    # Select model spec. If `use_global_fallback_only` is True we always return
+    # the global fallback spec to avoid loading many per-country sessions.
+    if use_global_fallback_only:
         return bundle.global_fallback_spec
 
     spec = bundle.model_specs_by_code.get(code)
@@ -177,6 +177,7 @@ def forecast_traditional_onnx_global_infections(
     forecast_days: int,
     start_date: str | None,
     step_days: int,
+    use_global_fallback_only: bool | None = None,
 ) -> dict:
     if forecast_days < 1:
         raise ValueError("forecast_days must be greater than or equal to 1.")
@@ -211,9 +212,16 @@ def forecast_traditional_onnx_global_infections(
 
         predicted_active_change_by_code: dict[str, float] = {}
 
+        # Determine runtime mode: parameter overrides environment variable when provided.
+        runtime_use_global = (
+            _env_flag("TRADITIONAL_ONNX_USE_GLOBAL_FALLBACK_ONLY", True)
+            if use_global_fallback_only is None
+            else bool(use_global_fallback_only)
+        )
+
         def _predict_one_country(item: tuple[str, object]) -> tuple[str, float]:
             code, state = item
-            model_spec = _select_traditional_onnx_model_spec(bundle, code)
+            model_spec = _select_traditional_onnx_model_spec(bundle, code, runtime_use_global)
             delay_days = _calculate_traditional_delay_days(origin_seed.first_case_date, state.first_case_date)
 
             if day_index <= delay_days:

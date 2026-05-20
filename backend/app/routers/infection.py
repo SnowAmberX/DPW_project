@@ -79,6 +79,7 @@ def get_traditional_onnx_forecast(
             forecast_days=payload.forecast_days,
             start_date=payload.start_date,
             step_days=payload.step_days,
+            use_global_fallback_only=payload.use_global_fallback_only,
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

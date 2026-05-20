@@ -8,6 +8,13 @@ class TraditionalOnnxForecastRequest(BaseModel):
     forecast_days: int = Field(default=365, ge=1, le=730, description="How many days to forecast forward")
     step_days: int = Field(default=1, ge=1, le=30, description="Return one frame every N days")
     start_date: str | None = Field(default=None, description="Optional simulation start date in YYYY-MM-DD")
+    use_global_fallback_only: bool | None = Field(
+        default=None,
+        description=(
+            "Override runtime mode: True = use global fallback only; False = use per-country models when available. "
+            "If omitted, environment variable TRADITIONAL_ONNX_USE_GLOBAL_FALLBACK_ONLY is used."
+        ),
+    )
 
 
 class TraditionalOnnxForecastFrame(BaseModel):
