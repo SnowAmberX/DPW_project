@@ -6,7 +6,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import joblib
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
@@ -69,7 +68,7 @@ def choose_feature_columns(df: pd.DataFrame) -> list[str]:
 
 
 def build_country_target(df_country: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
-    raw_target = pd.to_numeric(df_country["target_next_day_new_cases"], errors="coerce").fillna(0.0).clip(lower=0.0)
+    raw_target = pd.to_numeric(df_country["target_next_day_active_change"], errors="coerce").fillna(0.0)
     smooth_target = 0.7 * raw_target + 0.3 * raw_target.rolling(window=7, min_periods=1).mean()
     return raw_target, smooth_target
 
@@ -107,7 +106,7 @@ def build_split_masks(df_country: pd.DataFrame) -> tuple[np.ndarray, np.ndarray,
 
 def build_train_weights(y_train: np.ndarray) -> np.ndarray:
     growth = np.abs(np.diff(np.concatenate(([y_train[0]], y_train))))
-    return 1.0 + np.log1p(y_train) + 0.2 * np.log1p(growth)
+    return 1.0 + np.log1p(np.abs(y_train)) + 0.2 * np.log1p(growth)
 
 
 def fit_lgbm(
@@ -117,10 +116,8 @@ def fit_lgbm(
     y_val: np.ndarray,
     sample_weight: np.ndarray,
 ) -> lgb.LGBMRegressor:
-    objective = "poisson" if float(np.sum(y_train)) > 0 else "regression"
-
     model = lgb.LGBMRegressor(
-        objective=objective,
+        objective="regression",
         n_estimators=800,
         learning_rate=0.03,
         num_leaves=63,
@@ -185,23 +182,19 @@ def train_country_model(
     train_pred = np.asarray(model.predict(X_train), dtype=np.float64)
     test_pred = np.asarray(model.predict(X_test), dtype=np.float64)
 
-    train_pred = np.clip(train_pred, a_min=0.0, a_max=None)
-    test_pred = np.clip(test_pred, a_min=0.0, a_max=None)
-
     train_metrics = evaluate(raw_target.loc[train_mask].to_numpy(dtype=np.float64), train_pred)
     test_metrics = evaluate(y_test_raw, test_pred)
 
     country_dir = output_dir / "country_models" / code
     country_dir.mkdir(parents=True, exist_ok=True)
 
-    joblib.dump(model, country_dir / "lightgbm_model.joblib")
     save_onnx(model, len(feature_cols), country_dir / "lightgbm_model.onnx")
     (country_dir / "feature_columns.json").write_text(json.dumps(feature_cols, indent=2), encoding="utf-8")
     (country_dir / "inference_preprocess.json").write_text(
         json.dumps(
             {
-                "target": "smoothed_next_day_new_cases",
-                "postprocess": "clip_to_non_negative",
+                "target": "smoothed_next_day_active_change",
+                "postprocess": "identity",
                 "note": "features include regional and neighbor weighted signals",
             },
             indent=2,
@@ -230,7 +223,7 @@ def train_global_fallback(
     output_dir: Path,
 ) -> dict[str, Any]:
     df_all = df.sort_values(["date", "code"]).reset_index(drop=True)
-    raw_target = pd.to_numeric(df_all["target_next_day_new_cases"], errors="coerce").fillna(0.0).clip(lower=0.0)
+    raw_target = pd.to_numeric(df_all["target_next_day_active_change"], errors="coerce").fillna(0.0)
     fit_target = 0.7 * raw_target + 0.3 * raw_target.rolling(window=7, min_periods=1).mean()
 
     X_num = df_all[feature_cols].apply(pd.to_numeric, errors="coerce").fillna(0.0).astype(np.float32)
@@ -254,7 +247,6 @@ def train_global_fallback(
     )
 
     test_pred = np.asarray(model.predict(X_test), dtype=np.float64)
-    test_pred = np.clip(test_pred, a_min=0.0, a_max=None)
 
     test_metrics = evaluate(raw_target.loc[test_mask].to_numpy(dtype=np.float64), test_pred)
 
@@ -262,14 +254,13 @@ def train_global_fallback(
     fallback_dir.mkdir(parents=True, exist_ok=True)
 
     feature_cols_global = list(X.columns)
-    joblib.dump(model, fallback_dir / "lightgbm_model.joblib")
     save_onnx(model, len(feature_cols_global), fallback_dir / "lightgbm_model.onnx")
     (fallback_dir / "feature_columns.json").write_text(json.dumps(feature_cols_global, indent=2), encoding="utf-8")
     (fallback_dir / "inference_preprocess.json").write_text(
         json.dumps(
             {
-                "target": "smoothed_next_day_new_cases",
-                "postprocess": "clip_to_non_negative",
+                "target": "smoothed_next_day_active_change",
+                "postprocess": "identity",
                 "split_mode": split_mode,
             },
             indent=2,
@@ -305,7 +296,6 @@ def write_registry(
                 "strategy": "country_model",
                 "reason": "trained",
                 "onnx_path": f"country_models/{code}/lightgbm_model.onnx",
-                "joblib_path": f"country_models/{code}/lightgbm_model.joblib",
                 "feature_columns_path": f"country_models/{code}/feature_columns.json",
             }
         else:
@@ -313,16 +303,14 @@ def write_registry(
                 "strategy": "global_fallback",
                 "reason": skipped_reason.get(code, "training_failed"),
                 "onnx_path": "global_fallback_model/lightgbm_model.onnx",
-                "joblib_path": "global_fallback_model/lightgbm_model.joblib",
                 "feature_columns_path": "global_fallback_model/feature_columns.json",
             }
 
     payload = {
-        "model_version": "country_v5_simple_epicurve",
+        "model_version": "country_v6_simple_active_delta",
         "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
         "global_fallback": {
             "onnx_path": "global_fallback_model/lightgbm_model.onnx",
-            "joblib_path": "global_fallback_model/lightgbm_model.joblib",
             "feature_columns_path": "global_fallback_model/feature_columns.json",
             "metrics": {
                 "test_r2": float(global_metrics["test_r2"]),
@@ -395,7 +383,7 @@ def main() -> None:
     df["code"] = df["code"].astype(str).str.upper().str.strip()
     df = df[df["code"].str.match(r"^[A-Z]{3}$", na=False)].copy()
 
-    needed_cols = {"code", "date", "target_next_day_new_cases"}
+    needed_cols = {"code", "date", "target_next_day_active_change"}
     missing = sorted([c for c in needed_cols if c not in df.columns])
     if missing:
         raise ValueError(f"Missing required columns: {missing}")
@@ -445,7 +433,7 @@ def main() -> None:
         "",
         "Notes:",
         "- Features keep regional and neighbor influence.",
-        "- Target uses smoothed next-day cases to better capture epidemic phases.",
+        "- Target uses smoothed next-day active-case change (can be positive or negative).",
     ]
     (output_dir / "result.txt").write_text("\n".join(result_lines), encoding="utf-8")
 

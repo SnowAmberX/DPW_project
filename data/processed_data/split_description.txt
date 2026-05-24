@@ -1,0 +1,12 @@
+Time-Based Split Description
+
+Split strategy:
+- Strict chronological split (no random shuffle)
+- Train: date <= 2024-04-19
+- Validation: 2024-04-19 < date <= 2025-03-22
+- Test: 2025-03-22 < date <= 2026-02-21
+
+Reason:
+- Avoid temporal leakage
+- Simulate real next-day forecasting in production
+- Keep signed next-day active-change target for increase/decrease dynamics

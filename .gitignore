@@ -171,3 +171,5 @@ dump
 *.joblib
 
 .claude/
+
+*.pptx

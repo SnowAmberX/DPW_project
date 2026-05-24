@@ -1,0 +1,68 @@
+Feature Dictionary (cleaned_panel_country_day.csv)
+
+Primary Keys:
+- code: ISO-3 country code
+- date: observation date (daily)
+
+Label:
+- target_next_day_new_cases: supervised target, next-day new cases for each country
+- target_next_day_active_change: supervised target, next-day change of active-cases proxy (can be +/-)
+
+Derived Epidemiology Signals:
+- net_new_cases: new_cases - new_deaths
+- active_cases_proxy: rolling 21-day net incidence clipped at 0
+
+Core Epidemiology Features:
+- new_cases, new_deaths
+- new_cases_lag_1, new_cases_lag_3, new_cases_lag_7, new_cases_lag_14
+- new_deaths_lag_1, new_deaths_lag_3, new_deaths_lag_7, new_deaths_lag_14
+- new_cases_roll_mean_7, new_cases_roll_mean_14
+- new_cases_growth_1d, new_cases_growth_7d
+
+Policy and Transmission Features:
+- stringency_index: policy stringency (0-100)
+- reproduction_rate
+- positive_rate
+
+Vaccination Features:
+- total_vaccinations
+- people_vaccinated
+- people_fully_vaccinated
+- total_boosters
+- new_vaccinations
+
+Testing Features:
+- total_tests
+- new_tests
+
+Static Country Features:
+- continent
+- population
+- population_density
+- median_age
+- life_expectancy
+- gdp_per_capita
+- hospital_beds_per_thousand
+- human_development_index
+
+Missingness Flags (for static features):
+- population_missing_flag
+- population_density_missing_flag
+- median_age_missing_flag
+- life_expectancy_missing_flag
+- gdp_per_capita_missing_flag
+- hospital_beds_per_thousand_missing_flag
+- human_development_index_missing_flag
+
+Calendar Features:
+- day_of_week
+- month
+
+Cross-Country Transmission Features (V3):
+- region_peer_new_cases_roll7_mean: same-continent peer mean of 7-day new-cases trend (excluding self)
+- neighbor_weighted_new_cases_mean: same-continent peer mean of same-day new cases (external border data not used)
+- neighbor_weighted_stringency_mean: same-continent peer mean of same-day stringency index (external border data not used)
+- neighbor_count: number of same-continent peer countries (excluding self)
+
+Data Split:
+- data_split: train / validation / test (time-based split)

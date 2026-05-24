@@ -11,6 +11,7 @@ RAW_FILE = ROOT_DIR / "data" / "raw_data" / "compact.csv"
 OUTPUT_FILE = ROOT_DIR / "data" / "processed_data" / "cleaned_panel_country_day.csv"
 FEATURE_DICT_FILE = ROOT_DIR / "data" / "processed_data" / "feature_dictionary.txt"
 SPLIT_DESC_FILE = ROOT_DIR / "data" / "processed_data" / "split_description.txt"
+ACTIVE_CASES_PROXY_WINDOW_DAYS = 21
 
 
 def load_base_frame() -> pd.DataFrame:
@@ -149,8 +150,8 @@ def clean_features(df: pd.DataFrame) -> pd.DataFrame:
 
     flow_cols = ["new_cases", "new_deaths", "new_tests", "new_vaccinations"]
     for col in flow_cols:
+        # Keep signed daily corrections instead of forcing non-negative values.
         df[col] = df[col].fillna(0)
-        df[col] = df[col].clip(lower=0)
 
     cumulative_cols = [
         "total_tests",
@@ -189,8 +190,17 @@ def build_training_columns(df: pd.DataFrame) -> pd.DataFrame:
     df["day_of_week"] = df["date"].dt.dayofweek
     df["month"] = df["date"].dt.month
 
-    # Supervised label: next-day new cases.
+    # Supervised labels.
     df["target_next_day_new_cases"] = by_country["new_cases"].shift(-1)
+
+    # Active-cases proxy: rolling net incidence over infectious window.
+    df["net_new_cases"] = df["new_cases"] - df["new_deaths"]
+    df["active_cases_proxy"] = (
+        by_country["net_new_cases"].transform(
+            lambda s: s.rolling(ACTIVE_CASES_PROXY_WINDOW_DAYS, min_periods=1).sum()
+        ).clip(lower=0)
+    )
+    df["target_next_day_active_change"] = by_country["active_cases_proxy"].shift(-1) - df["active_cases_proxy"]
 
     lag_and_growth_cols = [
         c for c in df.columns if c.startswith("new_cases_lag_") or c.startswith("new_deaths_lag_")
@@ -198,8 +208,7 @@ def build_training_columns(df: pd.DataFrame) -> pd.DataFrame:
 
     df[lag_and_growth_cols] = df[lag_and_growth_cols].replace([np.inf, -np.inf], np.nan).fillna(0)
 
-    df = df.dropna(subset=["target_next_day_new_cases"]).copy()
-    df["target_next_day_new_cases"] = df["target_next_day_new_cases"].clip(lower=0)
+    df = df.dropna(subset=["target_next_day_new_cases", "target_next_day_active_change"]).copy()
 
     return df
 
@@ -227,6 +236,11 @@ Primary Keys:
 
 Label:
 - target_next_day_new_cases: supervised target, next-day new cases for each country
+- target_next_day_active_change: supervised target, next-day change of active-cases proxy (can be +/-)
+
+Derived Epidemiology Signals:
+- net_new_cases: new_cases - new_deaths
+- active_cases_proxy: rolling 21-day net incidence clipped at 0
 
 Core Epidemiology Features:
 - new_cases, new_deaths
@@ -298,6 +312,7 @@ Split strategy:
 Reason:
 - Avoid temporal leakage
 - Simulate real next-day forecasting in production
+- Keep signed next-day active-change target for increase/decrease dynamics
 """
     SPLIT_DESC_FILE.write_text(text, encoding="utf-8")
 
